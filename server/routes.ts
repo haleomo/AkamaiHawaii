@@ -18,6 +18,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new declaration
   app.post("/api/declarations", async (req, res) => {
     try {
+      console.log("[DEBUG] POST /api/declarations - Request body:", JSON.stringify(req.body, null, 2));
+      
       const validatedData = insertDeclarationSchema.parse({
         numberOfPeople: 1,
         travelerType: "visitor",
@@ -33,9 +35,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body
       });
 
+      console.log("[DEBUG] POST /api/declarations - Validated data:", JSON.stringify(validatedData, null, 2));
+
       const declaration = await storage.createDeclaration(validatedData);
+      console.log("[DEBUG] POST /api/declarations - Created declaration:", JSON.stringify(declaration, null, 2));
+      
       res.json(declaration);
     } catch (error: any) {
+      console.log("[DEBUG] POST /api/declarations - Error:", error);
+      console.log("[DEBUG] POST /api/declarations - Error details:", error.errors || error.message);
       res.status(400).json({ 
         message: "Validation failed", 
         errors: error.errors || error.message 
@@ -63,16 +71,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/declarations/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      console.log("[DEBUG] PATCH /api/declarations/:id - ID:", id);
+      console.log("[DEBUG] PATCH /api/declarations/:id - Request body:", JSON.stringify(req.body, null, 2));
+      
       const validatedData = updateDeclarationSchema.parse(req.body);
+      console.log("[DEBUG] PATCH /api/declarations/:id - Validated data:", JSON.stringify(validatedData, null, 2));
       
       const updated = await storage.updateDeclaration(id, validatedData);
       
       if (!updated) {
+        console.log("[DEBUG] PATCH /api/declarations/:id - Declaration not found");
         return res.status(404).json({ message: "Declaration not found" });
       }
       
+      console.log("[DEBUG] PATCH /api/declarations/:id - Updated declaration:", JSON.stringify(updated, null, 2));
       res.json(updated);
     } catch (error: any) {
+      console.log("[DEBUG] PATCH /api/declarations/:id - Error:", error);
+      console.log("[DEBUG] PATCH /api/declarations/:id - Error details:", error.errors || error.message);
       res.status(400).json({ 
         message: "Validation failed", 
         errors: error.errors || error.message 
@@ -107,6 +123,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/declarations/:id/validate-step", async (req, res) => {
     try {
       const { step, data } = req.body;
+      console.log("[DEBUG] POST /api/declarations/:id/validate-step - Step:", step);
+      console.log("[DEBUG] POST /api/declarations/:id/validate-step - Data:", JSON.stringify(data, null, 2));
       
       let schema;
       switch (step) {
@@ -129,12 +147,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           schema = finalSubmissionSchema;
           break;
         default:
+          console.log("[DEBUG] POST /api/declarations/:id/validate-step - Invalid step:", step);
           return res.status(400).json({ message: "Invalid step" });
       }
       
       const validatedData = schema.parse(data);
+      console.log("[DEBUG] POST /api/declarations/:id/validate-step - Validated data:", JSON.stringify(validatedData, null, 2));
       res.json({ valid: true, data: validatedData });
     } catch (error: any) {
+      console.log("[DEBUG] POST /api/declarations/:id/validate-step - Validation error:", error);
+      console.log("[DEBUG] POST /api/declarations/:id/validate-step - Error details:", error.errors || error.message);
       res.status(400).json({ 
         valid: false,
         message: "Validation failed", 

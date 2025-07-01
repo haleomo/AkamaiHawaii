@@ -116,13 +116,21 @@ export default function DeclarationForm() {
   });
 
   const handleNext = async () => {
+    console.log('[DEBUG] handleNext - Current step:', formData.currentStep);
+    console.log('[DEBUG] handleNext - Form data:', formData);
+    
     if (formData.currentStep < TOTAL_STEPS) {
       // Validate and save current step
       const stepData = getStepData();
+      console.log('[DEBUG] handleNext - Step data:', stepData);
+      
       if (stepData && formData.declarationId) {
         try {
+          console.log('[DEBUG] handleNext - Updating declaration with ID:', formData.declarationId);
           await updateMutation.mutateAsync(stepData);
+          console.log('[DEBUG] handleNext - Update successful');
         } catch (error) {
+          console.error('[DEBUG] handleNext - Update error:', error);
           toast({
             title: "Validation Error", 
             description: "Please check your entries and try again",
@@ -133,15 +141,18 @@ export default function DeclarationForm() {
       }
       
       setCurrentStep(formData.currentStep + 1);
+      console.log('[DEBUG] handleNext - Moving to step:', formData.currentStep + 1);
     } else {
       // Submit form
       try {
+        console.log('[DEBUG] handleNext - Submitting final form');
         await submitMutation.mutateAsync({
           certificationAccepted: true,
           inspectionUnderstood: true,
         });
+        console.log('[DEBUG] handleNext - Submission successful');
       } catch (error) {
-        console.error('Submission error:', error);
+        console.error('[DEBUG] handleNext - Submission error:', error);
       }
     }
   };
