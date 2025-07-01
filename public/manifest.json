@@ -1,0 +1,40 @@
+{
+  "name": "Akamai Arrival - Hawaii Agriculture Declaration",
+  "short_name": "Akamai Arrival",
+  "description": "Complete your mandatory Hawaii plant and animal declaration form",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#006B96",
+  "orientation": "portrait-primary",
+  "categories": ["travel", "government"],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23006B96'/><text x='96' y='120' font-size='100' text-anchor='middle' fill='white'>🌺</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23006B96'/><text x='256' y='320' font-size='280' text-anchor='middle' fill='white'>🌺</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Declaration",
+      "short_name": "New Form",
+      "description": "Start a new agriculture declaration",
+      "url": "/",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='.9em' font-size='90'>📝</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
