@@ -17,7 +17,7 @@ import { useFormStore } from "@/lib/form-store";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 const hawaiianIslands = [
   { id: 'oahu', name: 'Oʻahu (Honolulu)', image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' },
@@ -68,7 +68,9 @@ export default function DeclarationForm() {
         travelerType: formData.travelerType || 'visitor',
         visitFrequency: formData.visitFrequency || '1st',
         duration: formData.duration || 'overnight',
+        arrivalMethod: formData.arrivalMethod || 'flight',
         islands: formData.islands,
+        islandNights: formData.islandNights,
         plantItems: formData.plantItems,
         animalItems: formData.animalItems,
         language: formData.language,
@@ -161,14 +163,26 @@ export default function DeclarationForm() {
         };
       case 3:
         return {
-          islands: formData.islands,
+          arrivalMethod: formData.arrivalMethod,
+          flightNumber: formData.flightNumber,
+          airline: formData.airline,
+          shipName: formData.shipName,
+          shippingLine: formData.shippingLine,
+          arrivalDate: formData.arrivalDate ? new Date(formData.arrivalDate) : undefined,
+          arrivalPort: formData.arrivalPort,
+          departureLocation: formData.departureLocation,
         };
       case 4:
+        return {
+          islands: formData.islands,
+          islandNights: formData.islandNights,
+        };
+      case 5:
         return {
           plantItems: formData.plantItems,
           plantItemsDescription: formData.plantItemsDescription,
         };
-      case 5:
+      case 6:
         return {
           animalItems: formData.animalItems,
           animalItemsDescription: formData.animalItemsDescription,
@@ -185,12 +199,20 @@ export default function DeclarationForm() {
       case 2:
         return formData.numberOfPeople > 0 && formData.travelerType && formData.visitFrequency && formData.duration;
       case 3:
-        return formData.islands.length > 0;
+        if (formData.arrivalMethod === 'flight') {
+          return formData.flightNumber && formData.airline && formData.departureLocation;
+        }
+        if (formData.arrivalMethod === 'ship') {
+          return formData.shipName && formData.departureLocation;
+        }
+        return formData.arrivalMethod && formData.departureLocation;
       case 4:
-        return formData.plantItems.length === 0 || formData.plantItemsDescription.trim().length > 0;
+        return formData.islands.length > 0;
       case 5:
-        return formData.animalItems.length === 0 || formData.animalItemsDescription.trim().length > 0;
+        return formData.plantItems.length === 0 || formData.plantItemsDescription.trim().length > 0;
       case 6:
+        return formData.animalItems.length === 0 || formData.animalItemsDescription.trim().length > 0;
+      case 7:
         return true;
       default:
         return false;
@@ -377,8 +399,164 @@ export default function DeclarationForm() {
           </div>
         )}
 
-        {/* Step 3: Island Destinations */}
+        {/* Step 3: Arrival Information */}
         {formData.currentStep === 3 && (
+          <div className="py-6 space-y-6">
+            <Card>
+              <CardContent className="pt-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <Globe className="w-6 h-6 mr-2 text-hawaii-blue" />
+                  Arrival Information
+                </h2>
+                <p className="text-sm text-gray-600 mb-6">Please provide details about your arrival to Hawaii.</p>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label className="block text-sm font-medium text-gray-700 mb-3">
+                      Method of arrival <span className="text-red-500">*</span>
+                    </Label>
+                    <RadioGroup 
+                      value={formData.arrivalMethod} 
+                      onValueChange={(value) => updateFormData({ arrivalMethod: value as any })}
+                      className="space-y-2"
+                    >
+                      <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
+                        <RadioGroupItem value="flight" id="flight" />
+                        <Label htmlFor="flight" className="text-sm text-gray-700 cursor-pointer">✈️ Commercial Flight</Label>
+                      </div>
+                      <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
+                        <RadioGroupItem value="ship" id="ship" />
+                        <Label htmlFor="ship" className="text-sm text-gray-700 cursor-pointer">🚢 Cruise Ship / Ferry</Label>
+                      </div>
+                      <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
+                        <RadioGroupItem value="other" id="other" />
+                        <Label htmlFor="other" className="text-sm text-gray-700 cursor-pointer">🛥️ Private Vessel / Other</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="departureLocation" className="block text-sm font-medium text-gray-700 mb-2">
+                      Departure location <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="departureLocation"
+                      value={formData.departureLocation}
+                      onChange={(e) => updateFormData({ departureLocation: e.target.value })}
+                      placeholder="e.g., Los Angeles, CA"
+                      className="w-full"
+                    />
+                  </div>
+
+                  {formData.arrivalMethod === 'flight' && (
+                    <>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label htmlFor="airline" className="block text-sm font-medium text-gray-700 mb-2">
+                            Airline <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="airline"
+                            value={formData.airline}
+                            onChange={(e) => updateFormData({ airline: e.target.value })}
+                            placeholder="e.g., Hawaiian Airlines"
+                            className="w-full"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="flightNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                            Flight number <span className="text-red-500">*</span>
+                          </Label>
+                          <Input
+                            id="flightNumber"
+                            value={formData.flightNumber}
+                            onChange={(e) => updateFormData({ flightNumber: e.target.value })}
+                            placeholder="e.g., HA123"
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {formData.arrivalMethod === 'ship' && (
+                    <>
+                      <div>
+                        <Label htmlFor="shipName" className="block text-sm font-medium text-gray-700 mb-2">
+                          Ship/Vessel name <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="shipName"
+                          value={formData.shipName}
+                          onChange={(e) => updateFormData({ shipName: e.target.value })}
+                          placeholder="e.g., Pride of America"
+                          className="w-full"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="shippingLine" className="block text-sm font-medium text-gray-700 mb-2">
+                          Cruise line / Shipping company
+                        </Label>
+                        <Input
+                          id="shippingLine"
+                          value={formData.shippingLine}
+                          onChange={(e) => updateFormData({ shippingLine: e.target.value })}
+                          placeholder="e.g., Norwegian Cruise Line"
+                          className="w-full"
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label htmlFor="arrivalDate" className="block text-sm font-medium text-gray-700 mb-2">
+                        Arrival date
+                      </Label>
+                      <Input
+                        id="arrivalDate"
+                        type="date"
+                        value={formData.arrivalDate}
+                        onChange={(e) => updateFormData({ arrivalDate: e.target.value })}
+                        className="w-full"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="arrivalPort" className="block text-sm font-medium text-gray-700 mb-2">
+                        Arrival port/airport
+                      </Label>
+                      <Select 
+                        value={formData.arrivalPort} 
+                        onValueChange={(value) => updateFormData({ arrivalPort: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select port" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="hnl">HNL - Honolulu International</SelectItem>
+                          <SelectItem value="ogg">OGG - Maui (Kahului)</SelectItem>
+                          <SelectItem value="koa">KOA - Kona International</SelectItem>
+                          <SelectItem value="ito">ITO - Hilo International</SelectItem>
+                          <SelectItem value="lih">LIH - Lihue Airport</SelectItem>
+                          <SelectItem value="mkk">MKK - Molokai Airport</SelectItem>
+                          <SelectItem value="lny">LNY - Lanai Airport</SelectItem>
+                          <SelectItem value="hnm">HNM - Hana Airport</SelectItem>
+                          <SelectItem value="honolulu-harbor">Honolulu Harbor</SelectItem>
+                          <SelectItem value="lahaina-harbor">Lahaina Harbor</SelectItem>
+                          <SelectItem value="kailua-kona-harbor">Kailua-Kona Harbor</SelectItem>
+                          <SelectItem value="nawiliwili-harbor">Nawiliwili Harbor</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Step 4: Island Destinations */}
+        {formData.currentStep === 4 && (
           <div className="py-6 space-y-6">
             <Card>
               <CardContent className="pt-6">
@@ -440,8 +618,8 @@ export default function DeclarationForm() {
           </div>
         )}
 
-        {/* Step 4: Plant & Food Declaration */}
-        {formData.currentStep === 4 && (
+        {/* Step 5: Plant & Food Declaration */}
+        {formData.currentStep === 5 && (
           <div className="py-6 space-y-6">
             <Card>
               <CardContent className="pt-6">
@@ -497,8 +675,8 @@ export default function DeclarationForm() {
           </div>
         )}
 
-        {/* Step 5: Animal Declaration */}
-        {formData.currentStep === 5 && (
+        {/* Step 6: Animal Declaration */}
+        {formData.currentStep === 6 && (
           <div className="py-6 space-y-6">
             <Card>
               <CardContent className="pt-6">
@@ -565,8 +743,8 @@ export default function DeclarationForm() {
           </div>
         )}
 
-        {/* Step 6: Review & Submit */}
-        {formData.currentStep === 6 && (
+        {/* Step 7: Review & Submit */}
+        {formData.currentStep === 7 && (
           <div className="py-6 space-y-6">
             <Card>
               <CardContent className="pt-6">

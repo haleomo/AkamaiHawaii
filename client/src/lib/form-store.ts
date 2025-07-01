@@ -7,6 +7,14 @@ export interface FormData {
   travelerType: 'visitor' | 'resident' | 'moving' | '';
   visitFrequency: '1st' | '2nd' | '3rd' | '4th' | '5th' | '6-10' | '10+' | '';
   duration: 'hours' | 'overnight' | '';
+  arrivalMethod: 'flight' | 'ship' | 'other' | '';
+  flightNumber: string;
+  airline: string;
+  shipName: string;
+  shippingLine: string;
+  arrivalDate: string;
+  arrivalPort: string;
+  departureLocation: string;
   islands: string[];
   islandNights: Record<string, number>;
   plantItems: string[];
@@ -31,6 +39,14 @@ const initialFormData: FormData = {
   travelerType: '',
   visitFrequency: '',
   duration: '',
+  arrivalMethod: '',
+  flightNumber: '',
+  airline: '',
+  shipName: '',
+  shippingLine: '',
+  arrivalDate: '',
+  arrivalPort: '',
+  departureLocation: '',
   islands: [],
   islandNights: {},
   plantItems: [],
@@ -72,15 +88,26 @@ export const useFormStore = create<FormStore>()(
             };
           case 3:
             return {
+              arrivalMethod: formData.arrivalMethod,
+              flightNumber: formData.flightNumber,
+              airline: formData.airline,
+              shipName: formData.shipName,
+              shippingLine: formData.shippingLine,
+              arrivalDate: formData.arrivalDate,
+              arrivalPort: formData.arrivalPort,
+              departureLocation: formData.departureLocation,
+            };
+          case 4:
+            return {
               islands: formData.islands,
               islandNights: formData.islandNights,
             };
-          case 4:
+          case 5:
             return {
               plantItems: formData.plantItems,
               plantItemsDescription: formData.plantItemsDescription,
             };
-          case 5:
+          case 6:
             return {
               animalItems: formData.animalItems,
               animalItemsDescription: formData.animalItemsDescription,

@@ -6,6 +6,7 @@ import {
   insertDeclarationSchema,
   updateDeclarationSchema,
   travelerInfoSchema,
+  arrivalInfoSchema,
   islandDestinationSchema,
   plantDeclarationSchema,
   animalDeclarationSchema,
@@ -23,6 +24,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         visitFrequency: "1st",
         duration: "overnight",
         islands: [],
+        islandNights: {},
+        arrivalMethod: "flight",
         plantItems: [],
         animalItems: [],
         language: "en",
@@ -111,15 +114,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           schema = travelerInfoSchema;
           break;
         case 3:
-          schema = islandDestinationSchema;
+          schema = arrivalInfoSchema;
           break;
         case 4:
-          schema = plantDeclarationSchema;
+          schema = islandDestinationSchema;
           break;
         case 5:
-          schema = animalDeclarationSchema;
+          schema = plantDeclarationSchema;
           break;
         case 6:
+          schema = animalDeclarationSchema;
+          break;
+        case 7:
           schema = finalSubmissionSchema;
           break;
         default:

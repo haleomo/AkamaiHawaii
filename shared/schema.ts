@@ -9,6 +9,15 @@ export const declarations = pgTable("declarations", {
   visitFrequency: text("visit_frequency").notNull(),
   duration: text("duration").notNull(),
   islands: jsonb("islands").$type<string[]>().notNull().default([]),
+  islandNights: jsonb("island_nights").$type<Record<string, number>>().notNull().default({}),
+  arrivalMethod: text("arrival_method").notNull(), // flight, ship, other
+  flightNumber: text("flight_number"),
+  airline: text("airline"),
+  shipName: text("ship_name"),
+  shippingLine: text("shipping_line"),
+  arrivalDate: timestamp("arrival_date"),
+  arrivalPort: text("arrival_port"),
+  departureLocation: text("departure_location"),
   plantItems: jsonb("plant_items").$type<string[]>().notNull().default([]),
   animalItems: jsonb("animal_items").$type<string[]>().notNull().default([]),
   plantItemsDescription: text("plant_items_description"),
@@ -38,8 +47,30 @@ export const travelerInfoSchema = z.object({
   duration: z.enum(["hours", "overnight"]),
 });
 
+export const arrivalInfoSchema = z.object({
+  arrivalMethod: z.enum(["flight", "ship", "other"]),
+  flightNumber: z.string().optional(),
+  airline: z.string().optional(),
+  shipName: z.string().optional(),
+  shippingLine: z.string().optional(),
+  arrivalDate: z.date().optional(),
+  arrivalPort: z.string().optional(),
+  departureLocation: z.string().min(1, "Please enter departure location"),
+}).refine((data) => {
+  if (data.arrivalMethod === "flight") {
+    return data.flightNumber && data.airline;
+  }
+  if (data.arrivalMethod === "ship") {
+    return data.shipName;
+  }
+  return true;
+}, {
+  message: "Please provide complete arrival information",
+});
+
 export const islandDestinationSchema = z.object({
   islands: z.array(z.string()).min(1, "Please select at least one island"),
+  islandNights: z.record(z.number().min(0)).optional(),
 });
 
 export const plantDeclarationSchema = z.object({
