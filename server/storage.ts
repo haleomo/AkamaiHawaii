@@ -1,4 +1,6 @@
 import { declarations, type Declaration, type InsertDeclaration, type UpdateDeclaration } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getDeclaration(id: number): Promise<Declaration | undefined>;
@@ -7,57 +9,40 @@ export interface IStorage {
   submitDeclaration(id: number): Promise<Declaration | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private declarations: Map<number, Declaration>;
-  private currentId: number;
-
-  constructor() {
-    this.declarations = new Map();
-    this.currentId = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   async getDeclaration(id: number): Promise<Declaration | undefined> {
-    return this.declarations.get(id);
+    const [declaration] = await db.select().from(declarations).where(eq(declarations.id, id));
+    return declaration || undefined;
   }
 
   async createDeclaration(insertDeclaration: InsertDeclaration): Promise<Declaration> {
-    const id = this.currentId++;
-    const declaration: Declaration = {
-      ...insertDeclaration,
-      id,
-      createdAt: new Date(),
-      submittedAt: null,
-    };
-    this.declarations.set(id, declaration);
+    const [declaration] = await db
+      .insert(declarations)
+      .values(insertDeclaration)
+      .returning();
     return declaration;
   }
 
   async updateDeclaration(id: number, updates: UpdateDeclaration): Promise<Declaration | undefined> {
-    const existing = this.declarations.get(id);
-    if (!existing) return undefined;
-
-    const updated: Declaration = {
-      ...existing,
-      ...updates,
-    };
-    
-    this.declarations.set(id, updated);
-    return updated;
+    const [updated] = await db
+      .update(declarations)
+      .set(updates)
+      .where(eq(declarations.id, id))
+      .returning();
+    return updated || undefined;
   }
 
   async submitDeclaration(id: number): Promise<Declaration | undefined> {
-    const existing = this.declarations.get(id);
-    if (!existing) return undefined;
-
-    const submitted: Declaration = {
-      ...existing,
-      isSubmitted: true,
-      submittedAt: new Date(),
-    };
-    
-    this.declarations.set(id, submitted);
-    return submitted;
+    const [submitted] = await db
+      .update(declarations)
+      .set({ 
+        isSubmitted: true, 
+        submittedAt: new Date() 
+      })
+      .where(eq(declarations.id, id))
+      .returning();
+    return submitted || undefined;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
