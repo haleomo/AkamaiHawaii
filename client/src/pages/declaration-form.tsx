@@ -20,12 +20,12 @@ import { useLocation } from "wouter";
 const TOTAL_STEPS = 7;
 
 const hawaiianIslands = [
-  { id: 'oahu', name: 'Oʻahu (Honolulu)', image: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' },
-  { id: 'maui', name: 'Maui', image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' },
-  { id: 'hawaii', name: 'Hawaiʻi (Big Island)', image: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' },
-  { id: 'kauai', name: 'Kauaʻi', image: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' },
-  { id: 'molokai', name: 'Molokaʻi', image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' },
-  { id: 'lanai', name: 'Lānaʻi', image: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' },
+  { id: 'oahu', name: 'Oʻahu (Honolulu)', image: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Diamond Head crater with Honolulu skyline
+  { id: 'maui', name: 'Maui', image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Haleakala crater sunrise view
+  { id: 'hawaii', name: 'Hawaiʻi (Big Island)', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Active volcano lava flow
+  { id: 'kauai', name: 'Kauaʻi', image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Na Pali Coast dramatic cliffs
+  { id: 'molokai', name: 'Molokaʻi', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Sea cliffs and remote coastline
+  { id: 'lanai', name: 'Lānaʻi', image: 'https://images.unsplash.com/photo-1566133070146-6b5660b2e83a?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Garden of the Gods red rock formations
 ];
 
 const plantItems = [

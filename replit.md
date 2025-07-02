@@ -99,6 +99,9 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
+- July 02, 2025. Updated Hawaiian island images with authentic, representative landmarks for each island
+- July 02, 2025. Fixed date validation error in backend API for form submissions
+- July 02, 2025. Fixed TypeScript compilation errors and array type handling
 - July 01, 2025. Initial setup
 ```
 
