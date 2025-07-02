@@ -74,7 +74,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("[DEBUG] PATCH /api/declarations/:id - ID:", id);
       console.log("[DEBUG] PATCH /api/declarations/:id - Request body:", JSON.stringify(req.body, null, 2));
       
-      const validatedData = updateDeclarationSchema.parse(req.body);
+      // Handle date transformation manually
+      const requestData = { ...req.body };
+      if (requestData.arrivalDate && typeof requestData.arrivalDate === 'string') {
+        requestData.arrivalDate = new Date(requestData.arrivalDate);
+      }
+      const validatedData = updateDeclarationSchema.parse(requestData);
       console.log("[DEBUG] PATCH /api/declarations/:id - Validated data:", JSON.stringify(validatedData, null, 2));
       
       const updated = await storage.updateDeclaration(id, validatedData);
