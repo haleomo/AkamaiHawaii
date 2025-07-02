@@ -173,6 +173,7 @@ export default function DeclarationForm() {
           duration: formData.duration,
         };
       case 3:
+        console.log('Arrivale Date:', formData.arrivalDate);
         return {
           arrivalMethod: formData.arrivalMethod,
           flightNumber: formData.flightNumber,
@@ -211,6 +212,7 @@ export default function DeclarationForm() {
         return formData.numberOfPeople > 0 && formData.travelerType && formData.visitFrequency && formData.duration;
       case 3:
         if (formData.arrivalMethod === 'flight') {
+          console.log('flight %s airline %s departure %s', formData.flightNumber, formData.airline, formData.departureLocation);
           return formData.flightNumber && formData.airline && formData.departureLocation;
         }
         if (formData.arrivalMethod === 'ship') {
