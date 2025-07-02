@@ -204,21 +204,21 @@ export default function DeclarationForm() {
     }
   };
 
-  const canProceed = () => {
+  const canProceed = (): boolean => {
     switch (formData.currentStep) {
       case 1:
         return true;
       case 2:
-        return formData.numberOfPeople > 0 && formData.travelerType && formData.visitFrequency && formData.duration;
+        return Boolean(formData.numberOfPeople > 0 && formData.travelerType && formData.visitFrequency && formData.duration);
       case 3:
         if (formData.arrivalMethod === 'flight') {
           console.log('flight %s airline %s departure %s', formData.flightNumber, formData.airline, formData.departureLocation);
-          return formData.flightNumber && formData.airline && formData.departureLocation;
+          return Boolean(formData.flightNumber && formData.airline && formData.departureLocation);
         }
         if (formData.arrivalMethod === 'ship') {
-          return formData.shipName && formData.departureLocation;
+          return Boolean(formData.shipName && formData.departureLocation);
         }
-        return formData.arrivalMethod && formData.departureLocation;
+        return Boolean(formData.arrivalMethod && formData.departureLocation);
       case 4:
         return formData.islands.length > 0;
       case 5:
