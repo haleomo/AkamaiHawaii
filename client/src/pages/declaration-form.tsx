@@ -661,7 +661,7 @@ export default function DeclarationForm() {
                     <div className="flex items-start space-x-2">
                       <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                       <p className="text-sm text-blue-800">
-                        Please list plants you are carrying in description at the bottom of the screen (you may need to scroll).
+                        Please specify items you are carrying in description at the bottom of the screen (you may need to scroll).
                       </p>
                     </div>
                   </div>
@@ -736,7 +736,7 @@ export default function DeclarationForm() {
                     <div className="flex items-start space-x-2">
                       <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                       <p className="text-sm text-blue-800">
-                        Please list the animals you are carrying in the description field at the bottom of the screen (you may need to scroll down).
+                        Please specify items you are carrying in description at the bottom of the screen (you may need to scroll).
                       </p>
                     </div>
                   </div>
