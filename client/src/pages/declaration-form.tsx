@@ -35,6 +35,7 @@ const plantItems = [
   { id: 'seeds-bulbs', name: 'Raw or Propagative Seeds', icon: '🌰', description: 'Unprocessed seeds, bulbs for planting' },
   { id: 'soil-media', name: 'Soil, Growing Media, Sand', icon: '🪨', description: 'Dirt, potting soil, sand, growing medium' },
   { id: 'microorganisms', name: 'Microorganism Cultures', icon: '🦠', description: 'Bacterial, fungal, viral, or protozoa cultures' },
+  { id: 'none-of-above', name: 'None of Above', icon: '❌', description: 'I am not carrying any plant or food items' },
 ];
 
 const animalItems = [
@@ -44,6 +45,7 @@ const animalItems = [
   { id: 'seafood', name: 'Live Seafood', icon: '🦞', description: 'Lobsters, clams, oysters, live fish' },
   { id: 'reptiles', name: 'Reptiles', icon: '🦎', description: 'Turtles, lizards, snakes (PROHIBITED)' },
   { id: 'other-animals', name: 'Other Animals', icon: '🐾', description: 'Insects, amphibians, other live animals' },
+  { id: 'none-of-above', name: 'None of Above', icon: '❌', description: 'I am not traveling with any live animals' },
 ];
 
 export default function DeclarationForm() {
@@ -222,9 +224,15 @@ export default function DeclarationForm() {
       case 4:
         return formData.islands.length > 0;
       case 5:
-        return formData.plantItems.length === 0 || formData.plantItemsDescription.trim().length > 0;
+        // Allow proceed if no items selected, "None of Above" selected, or description provided for other items
+        return formData.plantItems.length === 0 || 
+               formData.plantItems.includes('none-of-above') || 
+               formData.plantItemsDescription.trim().length > 0;
       case 6:
-        return formData.animalItems.length === 0 || formData.animalItemsDescription.trim().length > 0;
+        // Allow proceed if no items selected, "None of Above" selected, or description provided for other items
+        return formData.animalItems.length === 0 || 
+               formData.animalItems.includes('none-of-above') || 
+               formData.animalItemsDescription.trim().length > 0;
       case 7:
         return true;
       default:
@@ -655,7 +663,14 @@ export default function DeclarationForm() {
                         checked={formData.plantItems.includes(item.id)}
                         onCheckedChange={(checked) => {
                           if (checked) {
-                            updateFormData({ plantItems: [...formData.plantItems, item.id] });
+                            if (item.id === 'none-of-above') {
+                              // If "None of Above" is selected, clear all other selections
+                              updateFormData({ plantItems: ['none-of-above'] });
+                            } else {
+                              // If other item is selected, remove "None of Above" if present
+                              const filteredItems = formData.plantItems.filter(id => id !== 'none-of-above');
+                              updateFormData({ plantItems: [...filteredItems, item.id] });
+                            }
                           } else {
                             updateFormData({ plantItems: formData.plantItems.filter(id => id !== item.id) });
                           }
@@ -673,7 +688,7 @@ export default function DeclarationForm() {
                   ))}
                 </div>
                 
-                {formData.plantItems.length > 0 && (
+                {formData.plantItems.length > 0 && !formData.plantItems.includes('none-of-above') && (
                   <div className="mt-6 space-y-4">
                     <div className="bg-hawaii-light border border-hawaii-blue/20 rounded-lg p-4">
                       <h4 className="font-medium text-hawaii-blue mb-3">Specify Items</h4>
@@ -712,7 +727,14 @@ export default function DeclarationForm() {
                         checked={formData.animalItems.includes(item.id)}
                         onCheckedChange={(checked) => {
                           if (checked) {
-                            updateFormData({ animalItems: [...formData.animalItems, item.id] });
+                            if (item.id === 'none-of-above') {
+                              // If "None of Above" is selected, clear all other selections
+                              updateFormData({ animalItems: ['none-of-above'] });
+                            } else {
+                              // If other item is selected, remove "None of Above" if present
+                              const filteredItems = formData.animalItems.filter(id => id !== 'none-of-above');
+                              updateFormData({ animalItems: [...filteredItems, item.id] });
+                            }
                           } else {
                             updateFormData({ animalItems: formData.animalItems.filter(id => id !== item.id) });
                           }
@@ -730,7 +752,7 @@ export default function DeclarationForm() {
                   ))}
                 </div>
                 
-                {formData.animalItems.length > 0 && (
+                {formData.animalItems.length > 0 && !formData.animalItems.includes('none-of-above') && (
                   <div className="mt-6 space-y-4">
                     <Card className="bg-yellow-50 border-yellow-200">
                       <CardContent className="pt-4">
