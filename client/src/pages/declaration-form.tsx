@@ -655,6 +655,18 @@ export default function DeclarationForm() {
                 </h2>
                 <p className="text-sm text-gray-600 mb-6">Select any plant or food items you are carrying. All marked items will be inspected.</p>
                 
+                {/* Notice when plant items are selected */}
+                {formData.plantItems.length > 0 && !formData.plantItems.includes('none-of-above') && (
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-start space-x-2">
+                      <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-blue-800">
+                        Please list plants you are carrying in description at the bottom of the screen (you may need to scroll).
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-4">
                   {plantItems.map(item => (
                     <div key={item.id} className="flex items-start p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
