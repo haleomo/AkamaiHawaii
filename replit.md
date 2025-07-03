@@ -34,6 +34,8 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 - Form validation using Zod schemas for each step
 - Persistent form state across browser sessions
 - Real-time form validation and error handling
+- Automatic draft saving for incomplete forms
+- Draft management interface for continuing saved forms
 
 ### Progressive Web App Features
 - Offline-first service worker implementation
@@ -99,6 +101,8 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
+- July 03, 2025. Implemented draft declarations feature with automatic saving, drafts management page, and ability to continue incomplete forms
+- July 03, 2025. Fixed items declared count to exclude "None of Above" selections from the total
 - July 03, 2025. Added user guidance notices in Plant & Food Items and Animal Declaration steps that appear when items are selected, directing users to the description field at bottom of screen
 - July 02, 2025. Updated Hawaiian island images with authentic, representative landmarks for each island
 - July 02, 2025. Fixed date validation error in backend API for form submissions
