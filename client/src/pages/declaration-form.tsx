@@ -267,8 +267,8 @@ export default function DeclarationForm() {
             <Card className="border-gray-100">
               <CardContent className="pt-6">
                 <img
-                  src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200"
-                  alt="Beautiful Hawaii landscape with palm trees and ocean"
+                  src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200"
+                  alt="Tropical Hawaiian beach with palm trees and turquoise waters"
                   className="w-full h-32 object-cover rounded-lg mb-4"
                 />
                 
