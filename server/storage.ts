@@ -1,12 +1,14 @@
 import { declarations, type Declaration, type InsertDeclaration, type UpdateDeclaration } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   getDeclaration(id: number): Promise<Declaration | undefined>;
   createDeclaration(declaration: InsertDeclaration): Promise<Declaration>;
   updateDeclaration(id: number, updates: UpdateDeclaration): Promise<Declaration | undefined>;
   submitDeclaration(id: number): Promise<Declaration | undefined>;
+  getDrafts(): Promise<Declaration[]>;
+  deleteDraft(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -42,6 +44,23 @@ export class DatabaseStorage implements IStorage {
       .where(eq(declarations.id, id))
       .returning();
     return submitted || undefined;
+  }
+
+  async getDrafts(): Promise<Declaration[]> {
+    const drafts = await db
+      .select()
+      .from(declarations)
+      .where(eq(declarations.isSubmitted, false))
+      .orderBy(desc(declarations.createdAt));
+    return drafts;
+  }
+
+  async deleteDraft(id: number): Promise<boolean> {
+    const [deleted] = await db
+      .delete(declarations)
+      .where(eq(declarations.id, id))
+      .returning();
+    return !!deleted;
   }
 }
 

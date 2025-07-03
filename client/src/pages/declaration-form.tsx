@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, Info, CheckCircle, Leaf, Fish, MapPin, Users, Phone, Globe, AlertCircle } from "lucide-react";
+import { AlertTriangle, Info, CheckCircle, Leaf, Fish, MapPin, Users, Phone, Globe, AlertCircle, FileText } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -315,6 +315,29 @@ export default function DeclarationForm() {
                     <p className="text-sm font-medium text-green-900">Works Offline</p>
                     <p className="text-xs text-green-700">Complete this form without internet connection</p>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Drafts Navigation */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="pt-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <FileText className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="text-sm font-medium text-blue-900">Saved Drafts</p>
+                      <p className="text-xs text-blue-700">Continue a previously started form</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setLocation('/drafts')}
+                    className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                  >
+                    View Drafts
+                  </Button>
                 </div>
               </CardContent>
             </Card>

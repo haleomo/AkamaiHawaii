@@ -7,12 +7,15 @@ import { useEffect } from "react";
 import { initializePWA } from "./lib/pwa-utils";
 import DeclarationForm from "@/pages/declaration-form";
 import Confirmation from "@/pages/confirmation";
+import Drafts from "@/pages/drafts";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={DeclarationForm} />
+      <Route path="/form" component={DeclarationForm} />
+      <Route path="/drafts" component={Drafts} />
       <Route path="/confirmation" component={Confirmation} />
       <Route component={NotFound} />
     </Switch>

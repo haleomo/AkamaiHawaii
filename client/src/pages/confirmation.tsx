@@ -72,17 +72,8 @@ export default function Confirmation() {
               <div className="flex justify-between">
                 <span className="text-gray-600">Items declared:</span>
                 <span className="font-medium">
-                  {(() => {
-                    const plantCount = formData.plantItems.filter(item => item !== 'none-of-above').length;
-                    const animalCount = formData.animalItems.filter(item => item !== 'none-of-above').length;
-                    const total = plantCount + animalCount;
-                    console.log('Plant items:', formData.plantItems);
-                    console.log('Animal items:', formData.animalItems);
-                    console.log('Plant count (excluding none-of-above):', plantCount);
-                    console.log('Animal count (excluding none-of-above):', animalCount);
-                    console.log('Total count:', total);
-                    return total;
-                  })()} items
+                  {(formData.plantItems.filter(item => item !== 'none-of-above').length + 
+                    formData.animalItems.filter(item => item !== 'none-of-above').length)} items
                 </span>
               </div>
             </div>

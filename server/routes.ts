@@ -170,6 +170,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all drafts
+  app.get("/api/drafts", async (req, res) => {
+    try {
+      const drafts = await storage.getDrafts();
+      res.json(drafts);
+    } catch (error: any) {
+      console.log("[DEBUG] GET /api/drafts - Error:", error);
+      res.status(500).json({ message: "Failed to get drafts" });
+    }
+  });
+
+  // Delete a draft
+  app.delete("/api/drafts/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteDraft(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: "Draft not found" });
+      }
+      
+      res.json({ message: "Draft deleted successfully" });
+    } catch (error: any) {
+      console.log("[DEBUG] DELETE /api/drafts/:id - Error:", error);
+      res.status(500).json({ message: "Failed to delete draft" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
