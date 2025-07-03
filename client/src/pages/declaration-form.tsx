@@ -873,10 +873,22 @@ export default function DeclarationForm() {
                     <h4 className="font-medium text-gray-900 mb-2">Items Declaration</h4>
                     <div className="text-sm text-gray-600">
                       <p className="mb-2">Plant/Food Items: <span className="font-medium">
-                        {formData.plantItems.length > 0 ? `${formData.plantItems.length} items declared` : 'None declared'}
+                        {(() => {
+                          const actualPlantItems = formData.plantItems.filter(item => item !== 'none-of-above');
+                          if (actualPlantItems.length === 0) {
+                            return 'None Declared';
+                          }
+                          return `${actualPlantItems.length} items declared`;
+                        })()}
                       </span></p>
                       <p>Animal Items: <span className="font-medium">
-                        {formData.animalItems.length > 0 ? `${formData.animalItems.length} items declared` : 'None declared'}
+                        {(() => {
+                          const actualAnimalItems = formData.animalItems.filter(item => item !== 'none-of-above');
+                          if (actualAnimalItems.length === 0) {
+                            return 'None Declared';
+                          }
+                          return `${actualAnimalItems.length} items declared`;
+                        })()}
                       </span></p>
                     </div>
                   </div>
