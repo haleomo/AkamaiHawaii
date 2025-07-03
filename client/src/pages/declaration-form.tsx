@@ -370,21 +370,26 @@ export default function DeclarationForm() {
                   </div>
                   
                   <div>
-                    <Label className="block text-sm font-medium text-gray-700 mb-3">
+                    <Label className="block text-sm font-medium text-gray-700 mb-2">
                       This trip to Hawaiʻi is my <span className="text-red-500">*</span>
                     </Label>
-                    <RadioGroup 
+                    <Select 
                       value={formData.visitFrequency} 
                       onValueChange={(value) => updateFormData({ visitFrequency: value as any })}
-                      className="grid grid-cols-2 gap-2"
                     >
-                      {['1st', '2nd', '3rd', '4th', '5th', '6-10', '10+'].map(freq => (
-                        <div key={freq} className="flex items-center justify-center p-3 border border-gray-200 rounded-lg">
-                          <RadioGroupItem value={freq} id={freq} className="sr-only" />
-                          <Label htmlFor={freq} className="text-sm text-gray-700 cursor-pointer">{freq}</Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select visit frequency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1st">1st visit</SelectItem>
+                        <SelectItem value="2nd">2nd visit</SelectItem>
+                        <SelectItem value="3rd">3rd visit</SelectItem>
+                        <SelectItem value="4th">4th visit</SelectItem>
+                        <SelectItem value="5th">5th visit</SelectItem>
+                        <SelectItem value="6-10">6-10 visits</SelectItem>
+                        <SelectItem value="10+">10+ visits</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
                   <div>
