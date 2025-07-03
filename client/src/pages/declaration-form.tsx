@@ -20,12 +20,12 @@ import { useLocation } from "wouter";
 const TOTAL_STEPS = 7;
 
 const hawaiianIslands = [
-  { id: 'oahu', name: 'Oʻahu (Honolulu)', image: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Diamond Head crater with Honolulu skyline
-  { id: 'maui', name: 'Maui', image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Haleakala crater sunrise view
-  { id: 'hawaii', name: 'Hawaiʻi (Big Island)', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Active volcano lava flow
-  { id: 'kauai', name: 'Kauaʻi', image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Na Pali Coast dramatic cliffs
-  { id: 'molokai', name: 'Molokaʻi', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Sea cliffs and remote coastline
-  { id: 'lanai', name: 'Lānaʻi', image: 'https://images.unsplash.com/photo-1566133070146-6b5660b2e83a?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Garden of the Gods red rock formations
+  { id: 'oahu', name: 'Oʻahu (Honolulu)', image: 'https://images.unsplash.com/photo-1512218640826-8b5d618ac11e?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Diamond Head crater view
+  { id: 'maui', name: 'Maui', image: 'https://images.unsplash.com/photo-1598133894008-61f7fdb8cc3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Haleakala sunrise
+  { id: 'hawaii', name: 'Hawaiʻi (Big Island)', image: 'https://images.unsplash.com/photo-1582967788606-a171c1080cb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Volcano National Park
+  { id: 'kauai', name: 'Kauaʻi', image: 'https://images.unsplash.com/photo-1606218321513-007b4d3c7d9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Na Pali Coast
+  { id: 'molokai', name: 'Molokaʻi', image: 'https://images.unsplash.com/photo-1520637836862-4d197d17c89a?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Molokai sea cliffs
+  { id: 'lanai', name: 'Lānaʻi', image: 'https://images.unsplash.com/photo-1578898886596-aa4b67cdc3a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80' }, // Lanai red rock formations
 ];
 
 const plantItems = [
