@@ -101,6 +101,7 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
+- July 03, 2025. Updated Review & Submit and Confirmation pages to display "None Declared" when only "None of Above" is selected for Plant/Food or Animal items
 - July 03, 2025. Implemented draft declarations feature with automatic saving, drafts management page, and ability to continue incomplete forms
 - July 03, 2025. Fixed items declared count to exclude "None of Above" selections from the total
 - July 03, 2025. Added user guidance notices in Plant & Food Items and Animal Declaration steps that appear when items are selected, directing users to the description field at bottom of screen
