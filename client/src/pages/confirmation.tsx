@@ -72,7 +72,8 @@ export default function Confirmation() {
               <div className="flex justify-between">
                 <span className="text-gray-600">Items declared:</span>
                 <span className="font-medium">
-                  {formData.plantItems.length + formData.animalItems.length} items
+                  {(formData.plantItems.filter(item => item !== 'none-of-above').length + 
+                    formData.animalItems.filter(item => item !== 'none-of-above').length)} items
                 </span>
               </div>
             </div>
