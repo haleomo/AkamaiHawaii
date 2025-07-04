@@ -258,14 +258,14 @@ export default function DeclarationForm() {
         };
       case 7:
         return {
-          hawaiiAddress: formData.hawaiiAddress,
-          sameAsHomeAddress: formData.sameAsHomeAddress,
-        };
-      case 8:
-        return {
           fullName: formData.fullName,
           homeAddress: formData.homeAddress,
           phoneNumber: formData.phoneNumber,
+        };
+      case 8:
+        return {
+          hawaiiAddress: formData.hawaiiAddress,
+          sameAsHomeAddress: formData.sameAsHomeAddress,
         };
       default:
         return null;
@@ -300,10 +300,10 @@ export default function DeclarationForm() {
                formData.animalItems.includes('none-of-above') || 
                formData.animalItemsDescription.trim().length > 0;
       case 7:
+        return Boolean(formData.fullName?.trim() && formData.homeAddress?.trim() && formData.phoneNumber?.trim());
+      case 8:
         // Hawaii address validation - either same as home address or valid hawaii address provided
         return formData.sameAsHomeAddress || Boolean(formData.hawaiiAddress?.trim() && formData.hawaiiAddress.trim().length >= 5);
-      case 8:
-        return Boolean(formData.fullName?.trim() && formData.homeAddress?.trim() && formData.phoneNumber?.trim());
       case 9:
         return true;
       default:
@@ -908,75 +908,8 @@ export default function DeclarationForm() {
           </div>
         )}
 
-        {/* Step 7: Hawaii Address */}
+        {/* Step 7: Contact Information */}
         {formData.currentStep === 7 && (
-          <div className="py-6 space-y-6">
-            <Card>
-              <CardContent className="pt-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                  <MapPin className="w-6 h-6 mr-2 text-hawaii-blue" />
-                  Hawaii Address or Accommodation
-                </h2>
-                <p className="text-sm text-gray-600 mb-6">
-                  Please provide your address or accommodation name while in Hawaii.
-                </p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
-                    <Checkbox
-                      id="sameAsHomeAddress"
-                      checked={formData.sameAsHomeAddress}
-                      onCheckedChange={(checked) => {
-                        const isChecked = checked === true;
-                        updateFormData({ sameAsHomeAddress: isChecked });
-                        if (isChecked) {
-                          updateFormData({ hawaiiAddress: '' });
-                        }
-                      }}
-                    />
-                    <Label htmlFor="sameAsHomeAddress" className="text-sm text-gray-700 cursor-pointer">
-                      Same as home address
-                    </Label>
-                  </div>
-
-                  {!formData.sameAsHomeAddress && (
-                    <div>
-                      <Label htmlFor="hawaiiAddress" className="text-sm font-medium text-gray-700">
-                        Hawaii Address or Accommodation Name *
-                      </Label>
-                      <Textarea
-                        id="hawaiiAddress"
-                        value={formData.hawaiiAddress || ''}
-                        onChange={(e) => updateFormData({ hawaiiAddress: e.target.value })}
-                        className="mt-1"
-                        placeholder="Enter your Hawaii address, hotel name, or accommodation details"
-                        rows={3}
-                        required={!formData.sameAsHomeAddress}
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Include hotel name, Airbnb address, or friend/family address where you'll be staying
-                      </p>
-                    </div>
-                  )}
-
-                  {formData.sameAsHomeAddress && (
-                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="flex items-start space-x-2">
-                        <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-green-800">
-                          Using your home address as your Hawaii address
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Step 8: Contact Information */}
-        {formData.currentStep === 8 && (
           <div className="py-6 space-y-6">
             <Card>
               <CardContent className="pt-6">
@@ -1043,6 +976,73 @@ export default function DeclarationForm() {
                       <p>Your contact information is stored securely and will automatically fill future forms for your convenience. This information is only used for official agriculture declaration purposes.</p>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Step 8: Hawaii Address */}
+        {formData.currentStep === 8 && (
+          <div className="py-6 space-y-6">
+            <Card>
+              <CardContent className="pt-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <MapPin className="w-6 h-6 mr-2 text-hawaii-blue" />
+                  Hawaii Address or Accommodation
+                </h2>
+                <p className="text-sm text-gray-600 mb-6">
+                  Please provide your address or accommodation name while in Hawaii.
+                </p>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
+                    <Checkbox
+                      id="sameAsHomeAddress"
+                      checked={formData.sameAsHomeAddress}
+                      onCheckedChange={(checked) => {
+                        const isChecked = checked === true;
+                        updateFormData({ sameAsHomeAddress: isChecked });
+                        if (isChecked) {
+                          updateFormData({ hawaiiAddress: '' });
+                        }
+                      }}
+                    />
+                    <Label htmlFor="sameAsHomeAddress" className="text-sm text-gray-700 cursor-pointer">
+                      Same as home address
+                    </Label>
+                  </div>
+
+                  {!formData.sameAsHomeAddress && (
+                    <div>
+                      <Label htmlFor="hawaiiAddress" className="text-sm font-medium text-gray-700">
+                        Hawaii Address or Accommodation Name *
+                      </Label>
+                      <Textarea
+                        id="hawaiiAddress"
+                        value={formData.hawaiiAddress || ''}
+                        onChange={(e) => updateFormData({ hawaiiAddress: e.target.value })}
+                        className="mt-1"
+                        placeholder="Enter your Hawaii address, hotel name, or accommodation details"
+                        rows={3}
+                        required={!formData.sameAsHomeAddress}
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Include hotel name, Airbnb address, or friend/family address where you'll be staying
+                      </p>
+                    </div>
+                  )}
+
+                  {formData.sameAsHomeAddress && (
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-start space-x-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm text-green-800">
+                          Using your home address as your Hawaii address
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
