@@ -612,16 +612,11 @@ export default function DeclarationForm() {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="Alaska Airlines">Alaska Airlines</SelectItem>
-                              <SelectItem value="Air Canada">Air Canada</SelectItem>
                               <SelectItem value="American Airlines">American Airlines</SelectItem>
                               <SelectItem value="Delta Airlines">Delta Airlines</SelectItem>
                               <SelectItem value="Hawaiian Airlines">Hawaiian Airlines</SelectItem>
-                              <SelectItem value="Japan Airlines">Japan Airlines</SelectItem>
-                              <SelectItem value="Korean Airlines">Korean Airlines</SelectItem>
-                              <SelectItem value="Philippine Airlines">Philippine Airlines</SelectItem>
                               <SelectItem value="Southwest Airlines">Southwest Airlines</SelectItem>
                               <SelectItem value="United Airlines">United Airlines</SelectItem>
-                              <SelectItem value="WestJet Airlines">WestJet Airlines</SelectItem>
                               <SelectItem value="Other Airline">Other Airline</SelectItem>
                             </SelectContent>
                           </Select>

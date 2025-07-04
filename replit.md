@@ -101,7 +101,7 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
-- July 04, 2025. Changed airline field from text input to dropdown with 12 predefined airline options including Alaska, Air Canada, American, Delta, Hawaiian, Japan, Korean, Philippine, Southwest, United, WestJet, and Other
+- July 04, 2025. Updated airline dropdown to 7 options: Alaska Airlines, American Airlines, Delta Airlines, Hawaiian Airlines, Southwest Airlines, United Airlines, and Other Airline
 - July 04, 2025. Updated duration requirement to be optional for "Returning Hawaii Resident" users while keeping it mandatory for visitors and people moving to Hawaii  
 - July 04, 2025. Updated visit frequency requirement to be optional for "Returning Hawaii Resident" users while keeping it mandatory for visitors and people moving to Hawaii
 - July 04, 2025. Reformatted PDF receipt into clean two-column layout without vertical separator for better readability and space utilization
