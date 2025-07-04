@@ -34,6 +34,8 @@ export const declarations = pgTable("declarations", {
   animalItems: jsonb("animal_items").notNull().default([]),
   plantItemsDescription: text("plant_items_description"),
   animalItemsDescription: text("animal_items_description"),
+  hawaiiAddress: text("hawaii_address"),
+  sameAsHomeAddress: boolean("same_as_home_address").notNull().default(false),
   language: text("language").notNull().default("en"),
   isSubmitted: boolean("is_submitted").notNull().default(false),
   submittedAt: timestamp("submitted_at"),
@@ -118,6 +120,19 @@ export const plantDeclarationSchema = z.object({
 export const animalDeclarationSchema = z.object({
   animalItems: z.array(z.string()),
   animalItemsDescription: z.string().optional(),
+});
+
+export const hawaiiAddressSchema = z.object({
+  hawaiiAddress: z.string().optional(),
+  sameAsHomeAddress: z.boolean(),
+}).refine((data) => {
+  if (data.sameAsHomeAddress) {
+    return true; // If same as home address, no need to validate hawaii address
+  }
+  return data.hawaiiAddress && data.hawaiiAddress.trim().length >= 5;
+}, {
+  message: "Please enter your Hawaii address or check 'Same As Home Address'",
+  path: ["hawaiiAddress"],
 });
 
 export const userInformationSchema = z.object({
