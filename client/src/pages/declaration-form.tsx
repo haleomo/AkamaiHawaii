@@ -987,6 +987,7 @@ export default function DeclarationForm() {
                   <div className="bg-gray-50 rounded-lg p-4">
                     <h4 className="font-medium text-gray-900 mb-2">Traveler Information</h4>
                     <div className="text-sm text-gray-600 space-y-1">
+                      <p>Full name: <span className="font-medium">{formData.fullName}</span></p>
                       <p>Number of travelers: <span className="font-medium">{formData.numberOfPeople}</span></p>
                       <p>Traveler type: <span className="font-medium">{formData.travelerType}</span></p>
                       <p>Visit frequency: <span className="font-medium">{formData.visitFrequency}</span></p>
