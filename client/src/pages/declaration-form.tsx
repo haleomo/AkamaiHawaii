@@ -21,7 +21,7 @@ import { getLocationBasedGreeting, formatLocalTime } from "@/lib/location-greeti
 const TOTAL_STEPS = 9;
 
 // Constants for dropdown options
-const AIRLINE_OPTIONS = [
+const airlineNames = [
   'Alaska Airlines',
   'American Airlines', 
   'Delta Airlines',
@@ -634,7 +634,7 @@ export default function DeclarationForm() {
                               <SelectValue placeholder="Select airline" />
                             </SelectTrigger>
                             <SelectContent>
-                              {AIRLINE_OPTIONS.map((airline) => (
+                              {airlineNames.map((airline) => (
                                 <SelectItem key={airline} value={airline}>
                                   {airline}
                                 </SelectItem>
