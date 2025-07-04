@@ -583,7 +583,7 @@ export default function DeclarationForm() {
                       </div>
                       <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
                         <RadioGroupItem value="ship" id="ship" />
-                        <Label htmlFor="ship" className="text-sm text-gray-700 cursor-pointer">🚢 Cruise Ship / Ferry</Label>
+                        <Label htmlFor="ship" className="text-sm text-gray-700 cursor-pointer">🚢 Cruise Ship</Label>
                       </div>
                       <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
                         <RadioGroupItem value="other" id="other" />
