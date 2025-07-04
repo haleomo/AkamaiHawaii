@@ -250,7 +250,7 @@ export default function DeclarationForm() {
                formData.animalItems.includes('none-of-above') || 
                formData.animalItemsDescription.trim().length > 0;
       case 7:
-        return Boolean(formData.fullName.trim() && formData.homeAddress.trim() && formData.phoneNumber.trim());
+        return Boolean(formData.fullName?.trim() && formData.homeAddress?.trim() && formData.phoneNumber?.trim());
       case 8:
         return true;
       default:
@@ -876,7 +876,7 @@ export default function DeclarationForm() {
                     <Input
                       id="fullName"
                       type="text"
-                      value={formData.fullName}
+                      value={formData.fullName || ''}
                       onChange={(e) => updateFormData({ fullName: e.target.value })}
                       className="mt-1"
                       placeholder="Enter your full name"
@@ -890,7 +890,7 @@ export default function DeclarationForm() {
                     </Label>
                     <Textarea
                       id="homeAddress"
-                      value={formData.homeAddress}
+                      value={formData.homeAddress || ''}
                       onChange={(e) => updateFormData({ homeAddress: e.target.value })}
                       className="mt-1"
                       placeholder="Enter your complete home address"
@@ -906,7 +906,7 @@ export default function DeclarationForm() {
                     <Input
                       id="phoneNumber"
                       type="tel"
-                      value={formData.phoneNumber}
+                      value={formData.phoneNumber || ''}
                       onChange={(e) => updateFormData({ phoneNumber: e.target.value })}
                       className="mt-1"
                       placeholder="Enter your phone number"
