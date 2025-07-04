@@ -1,13 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle, Download, Share, Home, Phone, Mail } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { useFormStore } from "@/lib/form-store";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function Confirmation() {
   const [, setLocation] = useLocation();
   const { formData, resetForm } = useFormStore();
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   useEffect(() => {
     if (!formData.isSubmitted) {
@@ -20,9 +23,230 @@ export default function Confirmation() {
     setLocation('/');
   };
 
-  const handleDownloadPDF = () => {
-    // TODO: Implement PDF generation
-    console.log('Downloading PDF...');
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true);
+    
+    try {
+      // Create a temporary container for PDF content
+      const pdfContent = document.createElement('div');
+      pdfContent.style.width = '794px'; // A4 width in pixels at 96 DPI
+      pdfContent.style.padding = '40px';
+      pdfContent.style.fontFamily = 'Arial, sans-serif';
+      pdfContent.style.backgroundColor = 'white';
+      pdfContent.style.color = 'black';
+      
+      // Generate PDF content
+      pdfContent.innerHTML = `
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #0066cc; font-size: 24px; margin-bottom: 10px;">Hawaii Agriculture Declaration</h1>
+          <h2 style="color: #666; font-size: 18px; margin-bottom: 20px;">Confirmation Receipt</h2>
+          <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="font-size: 16px; color: #0066cc; margin: 0;">
+              <strong>Declaration ID: ${formData.declarationId || 'N/A'}</strong>
+            </p>
+            <p style="font-size: 14px; color: #666; margin: 5px 0 0 0;">
+              Submitted: ${new Date().toLocaleString()}
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Traveler Information</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Full Name:</td>
+              <td style="padding: 8px 0;">${formData.fullName || 'Not provided'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Number of Travelers:</td>
+              <td style="padding: 8px 0;">${formData.numberOfPeople}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Traveler Type:</td>
+              <td style="padding: 8px 0;">${formData.travelerType}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Visit Frequency:</td>
+              <td style="padding: 8px 0;">${formData.visitFrequency}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Arrival Information</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Arrival Method:</td>
+              <td style="padding: 8px 0;">${formData.arrivalMethod}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Arrival Date:</td>
+              <td style="padding: 8px 0;">${formData.arrivalDate || 'Not provided'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Arrival Port:</td>
+              <td style="padding: 8px 0;">${formData.arrivalPort || 'Not provided'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Departure Location:</td>
+              <td style="padding: 8px 0;">${formData.departureLocation || 'Not provided'}</td>
+            </tr>
+            ${formData.arrivalMethod === 'flight' ? `
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Flight Number:</td>
+              <td style="padding: 8px 0;">${formData.flightNumber || 'Not provided'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Airline:</td>
+              <td style="padding: 8px 0;">${formData.airline || 'Not provided'}</td>
+            </tr>
+            ` : ''}
+            ${formData.arrivalMethod === 'ship' ? `
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Ship Name:</td>
+              <td style="padding: 8px 0;">${formData.shipName || 'Not provided'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Shipping Line:</td>
+              <td style="padding: 8px 0;">${formData.shippingLine || 'Not provided'}</td>
+            </tr>
+            ` : ''}
+          </table>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Island Destinations</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Islands Visiting:</td>
+              <td style="padding: 8px 0;">${formData.islands.length > 0 ? formData.islands.join(', ') : 'None specified'}</td>
+            </tr>
+            ${Object.entries(formData.islandNights).length > 0 ? `
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Nights per Island:</td>
+              <td style="padding: 8px 0;">
+                ${Object.entries(formData.islandNights).map(([island, nights]) => 
+                  `${island}: ${nights} nights`
+                ).join(', ')}
+              </td>
+            </tr>
+            ` : ''}
+          </table>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Plant & Food Items Declaration</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Items Declared:</td>
+              <td style="padding: 8px 0;">
+                ${formData.plantItems.length > 0 && !formData.plantItems.includes('none-of-above') 
+                  ? formData.plantItems.filter(item => item !== 'none-of-above').join(', ') || 'None Declared'
+                  : 'None Declared'
+                }
+              </td>
+            </tr>
+            ${formData.plantItemsDescription ? `
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Description:</td>
+              <td style="padding: 8px 0;">${formData.plantItemsDescription}</td>
+            </tr>
+            ` : ''}
+          </table>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Animal Declaration</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Items Declared:</td>
+              <td style="padding: 8px 0;">
+                ${formData.animalItems.length > 0 && !formData.animalItems.includes('none-of-above') 
+                  ? formData.animalItems.filter(item => item !== 'none-of-above').join(', ') || 'None Declared'
+                  : 'None Declared'
+                }
+              </td>
+            </tr>
+            ${formData.animalItemsDescription ? `
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Description:</td>
+              <td style="padding: 8px 0;">${formData.animalItemsDescription}</td>
+            </tr>
+            ` : ''}
+          </table>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Contact Information</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Phone Number:</td>
+              <td style="padding: 8px 0;">${formData.phoneNumber || 'Not provided'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold;">Home Address:</td>
+              <td style="padding: 8px 0;">${formData.homeAddress || 'Not provided'}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Hawaii Address</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Hawaii Address:</td>
+              <td style="padding: 8px 0;">
+                ${formData.sameAsHomeAddress 
+                  ? 'Same as home address' 
+                  : formData.hawaiiAddress || 'Not provided'
+                }
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="border-top: 2px solid #0066cc; padding-top: 20px; margin-top: 30px; text-align: center;">
+          <p style="font-size: 12px; color: #666; margin: 0;">
+            This declaration was submitted in compliance with Hawaii Department of Agriculture regulations.
+          </p>
+          <p style="font-size: 12px; color: #666; margin: 5px 0 0 0;">
+            Keep this receipt for your records during your stay in Hawaii.
+          </p>
+        </div>
+      `;
+
+      // Temporarily add to DOM for rendering
+      document.body.appendChild(pdfContent);
+
+      // Convert to canvas
+      const canvas = await html2canvas(pdfContent, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+
+      // Remove from DOM
+      document.body.removeChild(pdfContent);
+
+      // Create PDF
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgData = canvas.toDataURL('image/png');
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      
+      // Download PDF
+      const fileName = `hawaii-declaration-${formData.declarationId || 'receipt'}-${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('There was an error generating the PDF. Please try again.');
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const handleShare = () => {
@@ -133,10 +357,11 @@ export default function Confirmation() {
         <div className="space-y-3">
           <Button 
             onClick={handleDownloadPDF}
-            className="w-full bg-hawaii-blue hover:bg-blue-700 text-white"
+            disabled={isGeneratingPDF}
+            className="w-full bg-hawaii-blue hover:bg-blue-700 text-white disabled:opacity-50"
           >
             <Download className="w-4 h-4 mr-2" />
-            Download PDF Receipt
+            {isGeneratingPDF ? 'Generating PDF...' : 'Download PDF Receipt'}
           </Button>
           
           <div className="grid grid-cols-2 gap-3">
