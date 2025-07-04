@@ -112,7 +112,7 @@ export const arrivalInfoSchema = z.object({
   shippingLine: z.string().optional(),
   arrivalDate: z.date().optional(),
   arrivalPort: z.string().optional(),
-  departureLocation: z.string().min(1, "Please enter departure location"),
+  departureLocation: z.string().optional(),
 }).refine((data) => {
   if (data.arrivalMethod === "flight") {
     return data.flightNumber && data.airline;
@@ -123,6 +123,15 @@ export const arrivalInfoSchema = z.object({
   return true;
 }, {
   message: "Please provide complete arrival information",
+}).refine((data) => {
+  // Departure location is required for ships and other vessels, but optional for flights
+  if (data.arrivalMethod === "ship" || data.arrivalMethod === "other") {
+    return data.departureLocation && data.departureLocation.trim().length > 0;
+  }
+  return true;
+}, {
+  message: "Departure location is required for cruise ships and other vessels",
+  path: ["departureLocation"],
 });
 
 export const islandDestinationSchema = z.object({

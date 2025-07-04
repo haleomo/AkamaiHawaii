@@ -289,11 +289,14 @@ export default function DeclarationForm() {
       case 3:
         if (formData.arrivalMethod === 'flight') {
           console.log('flight %s airline %s departure %s', formData.flightNumber, formData.airline, formData.departureLocation);
-          return Boolean(formData.flightNumber && formData.airline && formData.departureLocation);
+          // For flights, departure location is optional
+          return Boolean(formData.flightNumber && formData.airline);
         }
         if (formData.arrivalMethod === 'ship') {
+          // For ships, departure location is required
           return Boolean(formData.shipName && formData.departureLocation);
         }
+        // For other methods, departure location is required
         return Boolean(formData.arrivalMethod && formData.departureLocation);
       case 4:
         return formData.islands.length > 0;
@@ -585,7 +588,7 @@ export default function DeclarationForm() {
 
                   <div>
                     <Label htmlFor="departureLocation" className="block text-sm font-medium text-gray-700 mb-2">
-                      Departure location <span className="text-red-500">*</span>
+                      Departure location {(formData.arrivalMethod === 'ship' || formData.arrivalMethod === 'other') && <span className="text-red-500">*</span>}
                     </Label>
                     <Input
                       id="departureLocation"
