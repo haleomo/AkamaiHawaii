@@ -68,6 +68,29 @@ export default function Confirmation() {
     setIsGeneratingPDF(true);
     
     try {
+      // Generate QR code specifically for PDF
+      const plantItemsCount = formData.plantItems.filter(item => item !== 'none-of-above').length;
+      const animalItemsCount = formData.animalItems.filter(item => item !== 'none-of-above').length;
+      const totalItemsCount = plantItemsCount + animalItemsCount;
+
+      const qrData = {
+        declarationId: formData.declarationId,
+        submittedAt: new Date().toISOString(),
+        itemsCount: totalItemsCount,
+        travelerName: formData.fullName,
+        arrivalDate: formData.arrivalDate
+      };
+
+      const qrString = JSON.stringify(qrData);
+      const pdfQrCode = await QRCode.toDataURL(qrString, {
+        width: 200,
+        margin: 1,
+        color: {
+          dark: '#0066cc',
+          light: '#FFFFFF'
+        }
+      });
+
       // Create a temporary container for PDF content
       const pdfContent = document.createElement('div');
       pdfContent.style.width = '794px'; // A4 width in pixels at 96 DPI
@@ -246,17 +269,15 @@ export default function Confirmation() {
           </table>
         </div>
 
-        ${qrCodeDataURL ? `
         <div style="border-top: 2px solid #0066cc; padding-top: 20px; margin-top: 30px; text-align: center;">
           <h3 style="color: #0066cc; margin-bottom: 15px;">Quick Reference QR Code</h3>
           <div style="display: inline-block; padding: 15px; background: white; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 15px;">
-            <img src="${qrCodeDataURL}" alt="Declaration QR Code" style="width: 120px; height: 120px;" />
+            <img src="${pdfQrCode}" alt="Declaration QR Code" style="width: 120px; height: 120px;" />
           </div>
           <p style="font-size: 10px; color: #666; margin: 0 0 15px 0;">
             Scan for quick access to declaration details
           </p>
         </div>
-        ` : ''}
 
         <div style="border-top: 2px solid #0066cc; padding-top: 20px; margin-top: 30px; text-align: center;">
           <p style="font-size: 12px; color: #666; margin: 0;">
