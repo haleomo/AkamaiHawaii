@@ -1,22 +1,63 @@
 import { useEffect, useState } from "react";
-import { CheckCircle, Download, Share, Home, Phone, Mail } from "lucide-react";
+import { CheckCircle, Download, Share, Home, Phone, Mail, QrCode } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { useFormStore } from "@/lib/form-store";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import QRCode from "qrcode";
 
 export default function Confirmation() {
   const [, setLocation] = useLocation();
   const { formData, resetForm } = useFormStore();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [qrCodeDataURL, setQrCodeDataURL] = useState<string>('');
 
   useEffect(() => {
     if (!formData.isSubmitted) {
       setLocation('/');
     }
   }, [formData.isSubmitted, setLocation]);
+
+  // Generate QR code when component loads
+  useEffect(() => {
+    if (formData.isSubmitted && formData.declarationId) {
+      generateQRCode();
+    }
+  }, [formData.isSubmitted, formData.declarationId]);
+
+  const generateQRCode = async () => {
+    try {
+      // Count total items declared (excluding "none-of-above")
+      const plantItemsCount = formData.plantItems.filter(item => item !== 'none-of-above').length;
+      const animalItemsCount = formData.animalItems.filter(item => item !== 'none-of-above').length;
+      const totalItemsCount = plantItemsCount + animalItemsCount;
+
+      // Create QR code data
+      const qrData = {
+        declarationId: formData.declarationId,
+        submittedAt: new Date().toISOString(),
+        itemsCount: totalItemsCount,
+        travelerName: formData.fullName,
+        arrivalDate: formData.arrivalDate
+      };
+
+      const qrString = JSON.stringify(qrData);
+      const qrCodeURL = await QRCode.toDataURL(qrString, {
+        width: 200,
+        margin: 1,
+        color: {
+          dark: '#0066cc',
+          light: '#FFFFFF'
+        }
+      });
+
+      setQrCodeDataURL(qrCodeURL);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
+  };
 
   const handleNewDeclaration = () => {
     resetForm();
@@ -205,6 +246,18 @@ export default function Confirmation() {
           </table>
         </div>
 
+        ${qrCodeDataURL ? `
+        <div style="border-top: 2px solid #0066cc; padding-top: 20px; margin-top: 30px; text-align: center;">
+          <h3 style="color: #0066cc; margin-bottom: 15px;">Quick Reference QR Code</h3>
+          <div style="display: inline-block; padding: 15px; background: white; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 15px;">
+            <img src="${qrCodeDataURL}" alt="Declaration QR Code" style="width: 120px; height: 120px;" />
+          </div>
+          <p style="font-size: 10px; color: #666; margin: 0 0 15px 0;">
+            Scan for quick access to declaration details
+          </p>
+        </div>
+        ` : ''}
+
         <div style="border-top: 2px solid #0066cc; padding-top: 20px; margin-top: 30px; text-align: center;">
           <p style="font-size: 12px; color: #666; margin: 0;">
             This declaration was submitted in compliance with Hawaii Department of Agriculture regulations.
@@ -313,6 +366,44 @@ export default function Confirmation() {
             </div>
           </CardContent>
         </Card>
+
+        {/* QR Code Section */}
+        {qrCodeDataURL && (
+          <Card className="mb-6">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <h2 className="font-semibold text-gray-900 mb-2 flex items-center justify-center">
+                  <QrCode className="w-5 h-5 mr-2 text-hawaii-blue" />
+                  Quick Reference QR Code
+                </h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  Scan this code for quick access to your declaration details
+                </p>
+                
+                <div className="flex justify-center mb-4">
+                  <div className="bg-white p-4 rounded-lg border-2 border-gray-200 inline-block">
+                    <img 
+                      src={qrCodeDataURL} 
+                      alt="Declaration QR Code" 
+                      className="w-40 h-40"
+                    />
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-500 space-y-1">
+                  <p><strong>Declaration ID:</strong> {formData.declarationId}</p>
+                  <p><strong>Items Declared:</strong> {(() => {
+                    const plantItemsCount = formData.plantItems.filter(item => item !== 'none-of-above').length;
+                    const animalItemsCount = formData.animalItems.filter(item => item !== 'none-of-above').length;
+                    const totalItemsCount = plantItemsCount + animalItemsCount;
+                    return totalItemsCount === 0 ? 'None' : totalItemsCount;
+                  })()}</p>
+                  <p><strong>Submitted:</strong> {new Date().toLocaleDateString()}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Next Steps */}
         <Card className="mb-6">

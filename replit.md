@@ -101,6 +101,7 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
+- July 04, 2025. Implemented QR code functionality on confirmation page displaying declaration ID, submission timestamp, and items count
 - July 04, 2025. Added Hawaii Address/Accommodation collection step after Contact Information with "Same As Home Address" checkbox option
 - July 04, 2025. Implemented contact information collection screen before form submission with automatic user data storage and retrieval
 - July 03, 2025. Implemented location-based greeting feature that changes based on user's local time with Hawaiian phrases
