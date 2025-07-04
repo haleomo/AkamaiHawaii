@@ -101,6 +101,8 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
+- July 04, 2025. Updated visit frequency requirement to be optional for "Returning Hawaii Resident" users while keeping it mandatory for visitors and people moving to Hawaii
+- July 04, 2025. Reformatted PDF receipt into clean two-column layout without vertical separator for better readability and space utilization
 - July 04, 2025. Implemented QR code functionality on confirmation page displaying declaration ID, submission timestamp, and items count
 - July 04, 2025. Added Hawaii Address/Accommodation collection step after Contact Information with "Same As Home Address" checkbox option
 - July 04, 2025. Implemented contact information collection screen before form submission with automatic user data storage and retrieval

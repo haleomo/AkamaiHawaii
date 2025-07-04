@@ -141,8 +141,13 @@ export default function Confirmation() {
       leftY += lineHeight;
       pdf.text(`Traveler Type: ${formData.travelerType}`, leftColumnX, leftY);
       leftY += lineHeight;
-      pdf.text(`Visit Frequency: ${formData.visitFrequency}`, leftColumnX, leftY);
-      leftY += 12;
+      
+      // Only show visit frequency for visitors and people moving to Hawaii
+      if (formData.travelerType === 'visitor' || formData.travelerType === 'moving') {
+        pdf.text(`Visit Frequency: ${formData.visitFrequency || 'Not provided'}`, leftColumnX, leftY);
+        leftY += lineHeight;
+      }
+      leftY += 6;
       
       // Section: Arrival Information
       pdf.setTextColor(0, 102, 204);
