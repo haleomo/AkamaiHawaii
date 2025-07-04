@@ -96,10 +96,13 @@ export default function Confirmation() {
       
       let yPosition = 20;
       const pageWidth = pdf.internal.pageSize.getWidth();
-      const margin = 20;
+      const margin = 15;
+      const columnWidth = (pageWidth - (margin * 3)) / 2; // Two columns with margins
+      const leftColumnX = margin;
+      const rightColumnX = margin + columnWidth + margin;
       const lineHeight = 6;
       
-      // Header
+      // Header (full width)
       pdf.setTextColor(0, 102, 204); // Hawaii blue
       pdf.setFontSize(20);
       pdf.text('Hawaii Agriculture Declaration', pageWidth / 2, yPosition, { align: 'center' });
@@ -109,7 +112,7 @@ export default function Confirmation() {
       pdf.text('Confirmation Receipt', pageWidth / 2, yPosition, { align: 'center' });
       yPosition += 15;
       
-      // Declaration ID box
+      // Declaration ID box (full width)
       pdf.setFontSize(14);
       pdf.text(`Declaration ID: ${formData.declarationId || 'N/A'}`, pageWidth / 2, yPosition, { align: 'center' });
       yPosition += 8;
@@ -117,139 +120,186 @@ export default function Confirmation() {
       pdf.setTextColor(100, 100, 100);
       pdf.setFontSize(10);
       pdf.text(`Submitted: ${new Date().toLocaleString()}`, pageWidth / 2, yPosition, { align: 'center' });
-      yPosition += 15;
+      yPosition += 20;
+      
+      // Draw column separator line
+      pdf.setLineWidth(0.5);
+      pdf.setDrawColor(200, 200, 200);
+      pdf.line(margin + columnWidth + (margin / 2), yPosition, margin + columnWidth + (margin / 2), 280);
+      
+      // LEFT COLUMN
+      let leftY = yPosition;
       
       // Section: Traveler Information
       pdf.setTextColor(0, 102, 204);
       pdf.setFontSize(12);
-      pdf.text('Traveler Information', margin, yPosition);
-      yPosition += 8;
+      pdf.text('Traveler Information', leftColumnX, leftY);
+      leftY += 8;
       
       pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(10);
-      pdf.text(`Full Name: ${formData.fullName || 'Not provided'}`, margin, yPosition);
-      yPosition += lineHeight;
-      pdf.text(`Number of Travelers: ${formData.numberOfPeople}`, margin, yPosition);
-      yPosition += lineHeight;
-      pdf.text(`Traveler Type: ${formData.travelerType}`, margin, yPosition);
-      yPosition += lineHeight;
-      pdf.text(`Visit Frequency: ${formData.visitFrequency}`, margin, yPosition);
-      yPosition += 12;
+      pdf.setFontSize(9);
+      pdf.text(`Full Name:`, leftColumnX, leftY);
+      pdf.text(`${formData.fullName || 'Not provided'}`, leftColumnX, leftY + 4);
+      leftY += 10;
+      
+      pdf.text(`Number of Travelers: ${formData.numberOfPeople}`, leftColumnX, leftY);
+      leftY += lineHeight;
+      pdf.text(`Traveler Type: ${formData.travelerType}`, leftColumnX, leftY);
+      leftY += lineHeight;
+      pdf.text(`Visit Frequency: ${formData.visitFrequency}`, leftColumnX, leftY);
+      leftY += 12;
       
       // Section: Arrival Information
       pdf.setTextColor(0, 102, 204);
       pdf.setFontSize(12);
-      pdf.text('Arrival Information', margin, yPosition);
-      yPosition += 8;
+      pdf.text('Arrival Information', leftColumnX, leftY);
+      leftY += 8;
       
       pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(10);
-      pdf.text(`Arrival Method: ${formData.arrivalMethod}`, margin, yPosition);
-      yPosition += lineHeight;
-      pdf.text(`Arrival Date: ${formData.arrivalDate || 'Not provided'}`, margin, yPosition);
-      yPosition += lineHeight;
-      pdf.text(`Arrival Port: ${formData.arrivalPort || 'Not provided'}`, margin, yPosition);
-      yPosition += lineHeight;
-      pdf.text(`Departure Location: ${formData.departureLocation || 'Not provided'}`, margin, yPosition);
-      yPosition += lineHeight;
+      pdf.setFontSize(9);
+      pdf.text(`Arrival Method: ${formData.arrivalMethod}`, leftColumnX, leftY);
+      leftY += lineHeight;
+      pdf.text(`Arrival Date: ${formData.arrivalDate || 'Not provided'}`, leftColumnX, leftY);
+      leftY += lineHeight;
+      pdf.text(`Arrival Port: ${formData.arrivalPort || 'Not provided'}`, leftColumnX, leftY);
+      leftY += lineHeight;
+      
+      const departureText = `${formData.departureLocation || 'Not provided'}`;
+      const maxTextWidth = columnWidth - 5;
+      const departureSplit = pdf.splitTextToSize(departureText, maxTextWidth);
+      pdf.text(`Departure Location:`, leftColumnX, leftY);
+      leftY += 4;
+      pdf.text(departureSplit, leftColumnX, leftY);
+      leftY += (departureSplit.length * 4) + 2;
       
       if (formData.arrivalMethod === 'flight') {
-        pdf.text(`Flight Number: ${formData.flightNumber || 'Not provided'}`, margin, yPosition);
-        yPosition += lineHeight;
-        pdf.text(`Airline: ${formData.airline || 'Not provided'}`, margin, yPosition);
-        yPosition += lineHeight;
+        pdf.text(`Flight Number: ${formData.flightNumber || 'Not provided'}`, leftColumnX, leftY);
+        leftY += lineHeight;
+        pdf.text(`Airline: ${formData.airline || 'Not provided'}`, leftColumnX, leftY);
+        leftY += lineHeight;
       }
       
       if (formData.arrivalMethod === 'ship') {
-        pdf.text(`Ship Name: ${formData.shipName || 'Not provided'}`, margin, yPosition);
-        yPosition += lineHeight;
-        pdf.text(`Shipping Line: ${formData.shippingLine || 'Not provided'}`, margin, yPosition);
-        yPosition += lineHeight;
+        pdf.text(`Ship Name: ${formData.shipName || 'Not provided'}`, leftColumnX, leftY);
+        leftY += lineHeight;
+        pdf.text(`Shipping Line: ${formData.shippingLine || 'Not provided'}`, leftColumnX, leftY);
+        leftY += lineHeight;
       }
-      yPosition += 6;
+      leftY += 8;
       
       // Section: Island Destinations
       pdf.setTextColor(0, 102, 204);
       pdf.setFontSize(12);
-      pdf.text('Island Destinations', margin, yPosition);
-      yPosition += 8;
+      pdf.text('Island Destinations', leftColumnX, leftY);
+      leftY += 8;
       
       pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(10);
-      pdf.text(`Islands Visiting: ${formData.islands.length > 0 ? formData.islands.join(', ') : 'None specified'}`, margin, yPosition);
-      yPosition += lineHeight;
+      pdf.setFontSize(9);
+      const islandsText = `${formData.islands.length > 0 ? formData.islands.join(', ') : 'None specified'}`;
+      const islandsSplit = pdf.splitTextToSize(islandsText, maxTextWidth);
+      pdf.text(`Islands Visiting:`, leftColumnX, leftY);
+      leftY += 4;
+      pdf.text(islandsSplit, leftColumnX, leftY);
+      leftY += (islandsSplit.length * 4) + 2;
       
       if (Object.entries(formData.islandNights).length > 0) {
         const nightsText = Object.entries(formData.islandNights).map(([island, nights]) => `${island}: ${nights} nights`).join(', ');
-        pdf.text(`Nights per Island: ${nightsText}`, margin, yPosition);
-        yPosition += lineHeight;
+        const nightsSplit = pdf.splitTextToSize(nightsText, maxTextWidth);
+        pdf.text(`Nights per Island:`, leftColumnX, leftY);
+        leftY += 4;
+        pdf.text(nightsSplit, leftColumnX, leftY);
+        leftY += (nightsSplit.length * 4) + 2;
       }
-      yPosition += 6;
+      
+      // RIGHT COLUMN
+      let rightY = yPosition;
       
       // Section: Plant & Food Items
       pdf.setTextColor(0, 102, 204);
       pdf.setFontSize(12);
-      pdf.text('Plant & Food Items Declaration', margin, yPosition);
-      yPosition += 8;
+      pdf.text('Plant & Food Items Declaration', rightColumnX, rightY);
+      rightY += 8;
       
       pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(10);
+      pdf.setFontSize(9);
       const plantItems = formData.plantItems.length > 0 && !formData.plantItems.includes('none-of-above') 
         ? formData.plantItems.filter(item => item !== 'none-of-above').join(', ') || 'None Declared'
         : 'None Declared';
-      pdf.text(`Items Declared: ${plantItems}`, margin, yPosition);
-      yPosition += lineHeight;
+      const plantSplit = pdf.splitTextToSize(plantItems, maxTextWidth);
+      pdf.text(`Items Declared:`, rightColumnX, rightY);
+      rightY += 4;
+      pdf.text(plantSplit, rightColumnX, rightY);
+      rightY += (plantSplit.length * 4) + 2;
       
       if (formData.plantItemsDescription) {
-        pdf.text(`Description: ${formData.plantItemsDescription}`, margin, yPosition);
-        yPosition += lineHeight;
+        const descSplit = pdf.splitTextToSize(formData.plantItemsDescription, maxTextWidth);
+        pdf.text(`Description:`, rightColumnX, rightY);
+        rightY += 4;
+        pdf.text(descSplit, rightColumnX, rightY);
+        rightY += (descSplit.length * 4) + 2;
       }
-      yPosition += 6;
+      rightY += 8;
       
       // Section: Animal Declaration
       pdf.setTextColor(0, 102, 204);
       pdf.setFontSize(12);
-      pdf.text('Animal Declaration', margin, yPosition);
-      yPosition += 8;
+      pdf.text('Animal Declaration', rightColumnX, rightY);
+      rightY += 8;
       
       pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(10);
+      pdf.setFontSize(9);
       const animalItems = formData.animalItems.length > 0 && !formData.animalItems.includes('none-of-above') 
         ? formData.animalItems.filter(item => item !== 'none-of-above').join(', ') || 'None Declared'
         : 'None Declared';
-      pdf.text(`Items Declared: ${animalItems}`, margin, yPosition);
-      yPosition += lineHeight;
+      const animalSplit = pdf.splitTextToSize(animalItems, maxTextWidth);
+      pdf.text(`Items Declared:`, rightColumnX, rightY);
+      rightY += 4;
+      pdf.text(animalSplit, rightColumnX, rightY);
+      rightY += (animalSplit.length * 4) + 2;
       
       if (formData.animalItemsDescription) {
-        pdf.text(`Description: ${formData.animalItemsDescription}`, margin, yPosition);
-        yPosition += lineHeight;
+        const animalDescSplit = pdf.splitTextToSize(formData.animalItemsDescription, maxTextWidth);
+        pdf.text(`Description:`, rightColumnX, rightY);
+        rightY += 4;
+        pdf.text(animalDescSplit, rightColumnX, rightY);
+        rightY += (animalDescSplit.length * 4) + 2;
       }
-      yPosition += 6;
+      rightY += 8;
       
       // Section: Contact Information
       pdf.setTextColor(0, 102, 204);
       pdf.setFontSize(12);
-      pdf.text('Contact Information', margin, yPosition);
-      yPosition += 8;
+      pdf.text('Contact Information', rightColumnX, rightY);
+      rightY += 8;
       
       pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(10);
-      pdf.text(`Phone Number: ${formData.phoneNumber || 'Not provided'}`, margin, yPosition);
-      yPosition += lineHeight;
-      pdf.text(`Home Address: ${formData.homeAddress || 'Not provided'}`, margin, yPosition);
-      yPosition += 12;
+      pdf.setFontSize(9);
+      pdf.text(`Phone Number: ${formData.phoneNumber || 'Not provided'}`, rightColumnX, rightY);
+      rightY += lineHeight;
+      
+      const homeAddressText = formData.homeAddress || 'Not provided';
+      const homeAddressSplit = pdf.splitTextToSize(homeAddressText, maxTextWidth);
+      pdf.text(`Home Address:`, rightColumnX, rightY);
+      rightY += 4;
+      pdf.text(homeAddressSplit, rightColumnX, rightY);
+      rightY += (homeAddressSplit.length * 4) + 8;
       
       // Section: Hawaii Address
       pdf.setTextColor(0, 102, 204);
       pdf.setFontSize(12);
-      pdf.text('Hawaii Address', margin, yPosition);
-      yPosition += 8;
+      pdf.text('Hawaii Address', rightColumnX, rightY);
+      rightY += 8;
       
       pdf.setTextColor(0, 0, 0);
-      pdf.setFontSize(10);
+      pdf.setFontSize(9);
       const hawaiiAddress = formData.sameAsHomeAddress ? 'Same as home address' : formData.hawaiiAddress || 'Not provided';
-      pdf.text(`Hawaii Address: ${hawaiiAddress}`, margin, yPosition);
-      yPosition += 15;
+      const hawaiiAddressSplit = pdf.splitTextToSize(hawaiiAddress, maxTextWidth);
+      pdf.text(`Hawaii Address:`, rightColumnX, rightY);
+      rightY += 4;
+      pdf.text(hawaiiAddressSplit, rightColumnX, rightY);
+      
+      // Determine the bottom position for QR code (below both columns)
+      yPosition = Math.max(leftY, rightY) + 15;
       
       // QR Code section
       pdf.setTextColor(0, 102, 204);
