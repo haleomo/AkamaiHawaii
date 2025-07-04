@@ -292,11 +292,29 @@ export default function Confirmation() {
       // Temporarily add to DOM for rendering
       document.body.appendChild(pdfContent);
 
+      // Wait for images to load
+      const images = pdfContent.querySelectorAll('img');
+      await Promise.all(Array.from(images).map(img => {
+        return new Promise((resolve) => {
+          if (img.complete) {
+            resolve(undefined);
+          } else {
+            img.onload = () => resolve(undefined);
+            img.onerror = () => resolve(undefined);
+          }
+        });
+      }));
+
+      // Small delay to ensure everything is rendered
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Convert to canvas
       const canvas = await html2canvas(pdfContent, {
         scale: 2,
         useCORS: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        allowTaint: true,
+        foreignObjectRendering: true
       });
 
       // Remove from DOM
