@@ -91,243 +91,189 @@ export default function Confirmation() {
         }
       });
 
-      // Create a temporary container for PDF content
-      const pdfContent = document.createElement('div');
-      pdfContent.style.width = '794px'; // A4 width in pixels at 96 DPI
-      pdfContent.style.padding = '40px';
-      pdfContent.style.fontFamily = 'Arial, sans-serif';
-      pdfContent.style.backgroundColor = 'white';
-      pdfContent.style.color = 'black';
-      
-      // Generate PDF content
-      pdfContent.innerHTML = `
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #0066cc; font-size: 24px; margin-bottom: 10px;">Hawaii Agriculture Declaration</h1>
-          <h2 style="color: #666; font-size: 18px; margin-bottom: 20px;">Confirmation Receipt</h2>
-          <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <p style="font-size: 16px; color: #0066cc; margin: 0;">
-              <strong>Declaration ID: ${formData.declarationId || 'N/A'}</strong>
-            </p>
-            <p style="font-size: 14px; color: #666; margin: 5px 0 0 0;">
-              Submitted: ${new Date().toLocaleString()}
-            </p>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Traveler Information</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Full Name:</td>
-              <td style="padding: 8px 0;">${formData.fullName || 'Not provided'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Number of Travelers:</td>
-              <td style="padding: 8px 0;">${formData.numberOfPeople}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Traveler Type:</td>
-              <td style="padding: 8px 0;">${formData.travelerType}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Visit Frequency:</td>
-              <td style="padding: 8px 0;">${formData.visitFrequency}</td>
-            </tr>
-          </table>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Arrival Information</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Arrival Method:</td>
-              <td style="padding: 8px 0;">${formData.arrivalMethod}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Arrival Date:</td>
-              <td style="padding: 8px 0;">${formData.arrivalDate || 'Not provided'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Arrival Port:</td>
-              <td style="padding: 8px 0;">${formData.arrivalPort || 'Not provided'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Departure Location:</td>
-              <td style="padding: 8px 0;">${formData.departureLocation || 'Not provided'}</td>
-            </tr>
-            ${formData.arrivalMethod === 'flight' ? `
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Flight Number:</td>
-              <td style="padding: 8px 0;">${formData.flightNumber || 'Not provided'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Airline:</td>
-              <td style="padding: 8px 0;">${formData.airline || 'Not provided'}</td>
-            </tr>
-            ` : ''}
-            ${formData.arrivalMethod === 'ship' ? `
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Ship Name:</td>
-              <td style="padding: 8px 0;">${formData.shipName || 'Not provided'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Shipping Line:</td>
-              <td style="padding: 8px 0;">${formData.shippingLine || 'Not provided'}</td>
-            </tr>
-            ` : ''}
-          </table>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Island Destinations</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Islands Visiting:</td>
-              <td style="padding: 8px 0;">${formData.islands.length > 0 ? formData.islands.join(', ') : 'None specified'}</td>
-            </tr>
-            ${Object.entries(formData.islandNights).length > 0 ? `
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Nights per Island:</td>
-              <td style="padding: 8px 0;">
-                ${Object.entries(formData.islandNights).map(([island, nights]) => 
-                  `${island}: ${nights} nights`
-                ).join(', ')}
-              </td>
-            </tr>
-            ` : ''}
-          </table>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Plant & Food Items Declaration</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Items Declared:</td>
-              <td style="padding: 8px 0;">
-                ${formData.plantItems.length > 0 && !formData.plantItems.includes('none-of-above') 
-                  ? formData.plantItems.filter(item => item !== 'none-of-above').join(', ') || 'None Declared'
-                  : 'None Declared'
-                }
-              </td>
-            </tr>
-            ${formData.plantItemsDescription ? `
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Description:</td>
-              <td style="padding: 8px 0;">${formData.plantItemsDescription}</td>
-            </tr>
-            ` : ''}
-          </table>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Animal Declaration</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Items Declared:</td>
-              <td style="padding: 8px 0;">
-                ${formData.animalItems.length > 0 && !formData.animalItems.includes('none-of-above') 
-                  ? formData.animalItems.filter(item => item !== 'none-of-above').join(', ') || 'None Declared'
-                  : 'None Declared'
-                }
-              </td>
-            </tr>
-            ${formData.animalItemsDescription ? `
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Description:</td>
-              <td style="padding: 8px 0;">${formData.animalItemsDescription}</td>
-            </tr>
-            ` : ''}
-          </table>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Contact Information</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Phone Number:</td>
-              <td style="padding: 8px 0;">${formData.phoneNumber || 'Not provided'}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">Home Address:</td>
-              <td style="padding: 8px 0;">${formData.homeAddress || 'Not provided'}</td>
-            </tr>
-          </table>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-          <h3 style="border-bottom: 2px solid #0066cc; padding-bottom: 5px; color: #0066cc;">Hawaii Address</h3>
-          <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold; width: 35%;">Hawaii Address:</td>
-              <td style="padding: 8px 0;">
-                ${formData.sameAsHomeAddress 
-                  ? 'Same as home address' 
-                  : formData.hawaiiAddress || 'Not provided'
-                }
-              </td>
-            </tr>
-          </table>
-        </div>
-
-        <div style="border-top: 2px solid #0066cc; padding-top: 20px; margin-top: 30px; text-align: center;">
-          <h3 style="color: #0066cc; margin-bottom: 15px;">Quick Reference QR Code</h3>
-          <div style="display: inline-block; padding: 15px; background: white; border: 2px solid #ddd; border-radius: 8px; margin-bottom: 15px;">
-            <img src="${pdfQrCode}" alt="Declaration QR Code" style="width: 120px; height: 120px;" />
-          </div>
-          <p style="font-size: 10px; color: #666; margin: 0 0 15px 0;">
-            Scan for quick access to declaration details
-          </p>
-        </div>
-
-        <div style="border-top: 2px solid #0066cc; padding-top: 20px; margin-top: 30px; text-align: center;">
-          <p style="font-size: 12px; color: #666; margin: 0;">
-            This declaration was submitted in compliance with Hawaii Department of Agriculture regulations.
-          </p>
-          <p style="font-size: 12px; color: #666; margin: 5px 0 0 0;">
-            Keep this receipt for your records during your stay in Hawaii.
-          </p>
-        </div>
-      `;
-
-      // Temporarily add to DOM for rendering
-      document.body.appendChild(pdfContent);
-
-      // Wait for images to load
-      const images = pdfContent.querySelectorAll('img');
-      await Promise.all(Array.from(images).map(img => {
-        return new Promise((resolve) => {
-          if (img.complete) {
-            resolve(undefined);
-          } else {
-            img.onload = () => resolve(undefined);
-            img.onerror = () => resolve(undefined);
-          }
-        });
-      }));
-
-      // Small delay to ensure everything is rendered
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Convert to canvas
-      const canvas = await html2canvas(pdfContent, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        allowTaint: true,
-        foreignObjectRendering: true
-      });
-
-      // Remove from DOM
-      document.body.removeChild(pdfContent);
-
-      // Create PDF
+      // Create PDF directly using jsPDF
       const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgData = canvas.toDataURL('image/png');
       
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      let yPosition = 20;
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const margin = 20;
+      const lineHeight = 6;
       
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      // Header
+      pdf.setTextColor(0, 102, 204); // Hawaii blue
+      pdf.setFontSize(20);
+      pdf.text('Hawaii Agriculture Declaration', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 10;
+      
+      pdf.setFontSize(16);
+      pdf.text('Confirmation Receipt', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 15;
+      
+      // Declaration ID box
+      pdf.setFontSize(14);
+      pdf.text(`Declaration ID: ${formData.declarationId || 'N/A'}`, pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 8;
+      
+      pdf.setTextColor(100, 100, 100);
+      pdf.setFontSize(10);
+      pdf.text(`Submitted: ${new Date().toLocaleString()}`, pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 15;
+      
+      // Section: Traveler Information
+      pdf.setTextColor(0, 102, 204);
+      pdf.setFontSize(12);
+      pdf.text('Traveler Information', margin, yPosition);
+      yPosition += 8;
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(10);
+      pdf.text(`Full Name: ${formData.fullName || 'Not provided'}`, margin, yPosition);
+      yPosition += lineHeight;
+      pdf.text(`Number of Travelers: ${formData.numberOfPeople}`, margin, yPosition);
+      yPosition += lineHeight;
+      pdf.text(`Traveler Type: ${formData.travelerType}`, margin, yPosition);
+      yPosition += lineHeight;
+      pdf.text(`Visit Frequency: ${formData.visitFrequency}`, margin, yPosition);
+      yPosition += 12;
+      
+      // Section: Arrival Information
+      pdf.setTextColor(0, 102, 204);
+      pdf.setFontSize(12);
+      pdf.text('Arrival Information', margin, yPosition);
+      yPosition += 8;
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(10);
+      pdf.text(`Arrival Method: ${formData.arrivalMethod}`, margin, yPosition);
+      yPosition += lineHeight;
+      pdf.text(`Arrival Date: ${formData.arrivalDate || 'Not provided'}`, margin, yPosition);
+      yPosition += lineHeight;
+      pdf.text(`Arrival Port: ${formData.arrivalPort || 'Not provided'}`, margin, yPosition);
+      yPosition += lineHeight;
+      pdf.text(`Departure Location: ${formData.departureLocation || 'Not provided'}`, margin, yPosition);
+      yPosition += lineHeight;
+      
+      if (formData.arrivalMethod === 'flight') {
+        pdf.text(`Flight Number: ${formData.flightNumber || 'Not provided'}`, margin, yPosition);
+        yPosition += lineHeight;
+        pdf.text(`Airline: ${formData.airline || 'Not provided'}`, margin, yPosition);
+        yPosition += lineHeight;
+      }
+      
+      if (formData.arrivalMethod === 'ship') {
+        pdf.text(`Ship Name: ${formData.shipName || 'Not provided'}`, margin, yPosition);
+        yPosition += lineHeight;
+        pdf.text(`Shipping Line: ${formData.shippingLine || 'Not provided'}`, margin, yPosition);
+        yPosition += lineHeight;
+      }
+      yPosition += 6;
+      
+      // Section: Island Destinations
+      pdf.setTextColor(0, 102, 204);
+      pdf.setFontSize(12);
+      pdf.text('Island Destinations', margin, yPosition);
+      yPosition += 8;
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(10);
+      pdf.text(`Islands Visiting: ${formData.islands.length > 0 ? formData.islands.join(', ') : 'None specified'}`, margin, yPosition);
+      yPosition += lineHeight;
+      
+      if (Object.entries(formData.islandNights).length > 0) {
+        const nightsText = Object.entries(formData.islandNights).map(([island, nights]) => `${island}: ${nights} nights`).join(', ');
+        pdf.text(`Nights per Island: ${nightsText}`, margin, yPosition);
+        yPosition += lineHeight;
+      }
+      yPosition += 6;
+      
+      // Section: Plant & Food Items
+      pdf.setTextColor(0, 102, 204);
+      pdf.setFontSize(12);
+      pdf.text('Plant & Food Items Declaration', margin, yPosition);
+      yPosition += 8;
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(10);
+      const plantItems = formData.plantItems.length > 0 && !formData.plantItems.includes('none-of-above') 
+        ? formData.plantItems.filter(item => item !== 'none-of-above').join(', ') || 'None Declared'
+        : 'None Declared';
+      pdf.text(`Items Declared: ${plantItems}`, margin, yPosition);
+      yPosition += lineHeight;
+      
+      if (formData.plantItemsDescription) {
+        pdf.text(`Description: ${formData.plantItemsDescription}`, margin, yPosition);
+        yPosition += lineHeight;
+      }
+      yPosition += 6;
+      
+      // Section: Animal Declaration
+      pdf.setTextColor(0, 102, 204);
+      pdf.setFontSize(12);
+      pdf.text('Animal Declaration', margin, yPosition);
+      yPosition += 8;
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(10);
+      const animalItems = formData.animalItems.length > 0 && !formData.animalItems.includes('none-of-above') 
+        ? formData.animalItems.filter(item => item !== 'none-of-above').join(', ') || 'None Declared'
+        : 'None Declared';
+      pdf.text(`Items Declared: ${animalItems}`, margin, yPosition);
+      yPosition += lineHeight;
+      
+      if (formData.animalItemsDescription) {
+        pdf.text(`Description: ${formData.animalItemsDescription}`, margin, yPosition);
+        yPosition += lineHeight;
+      }
+      yPosition += 6;
+      
+      // Section: Contact Information
+      pdf.setTextColor(0, 102, 204);
+      pdf.setFontSize(12);
+      pdf.text('Contact Information', margin, yPosition);
+      yPosition += 8;
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(10);
+      pdf.text(`Phone Number: ${formData.phoneNumber || 'Not provided'}`, margin, yPosition);
+      yPosition += lineHeight;
+      pdf.text(`Home Address: ${formData.homeAddress || 'Not provided'}`, margin, yPosition);
+      yPosition += 12;
+      
+      // Section: Hawaii Address
+      pdf.setTextColor(0, 102, 204);
+      pdf.setFontSize(12);
+      pdf.text('Hawaii Address', margin, yPosition);
+      yPosition += 8;
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(10);
+      const hawaiiAddress = formData.sameAsHomeAddress ? 'Same as home address' : formData.hawaiiAddress || 'Not provided';
+      pdf.text(`Hawaii Address: ${hawaiiAddress}`, margin, yPosition);
+      yPosition += 15;
+      
+      // QR Code section
+      pdf.setTextColor(0, 102, 204);
+      pdf.setFontSize(12);
+      pdf.text('Quick Reference QR Code', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 10;
+      
+      // Add QR code image
+      const qrSize = 30;
+      const qrX = (pageWidth - qrSize) / 2;
+      pdf.addImage(pdfQrCode, 'PNG', qrX, yPosition, qrSize, qrSize);
+      yPosition += qrSize + 8;
+      
+      pdf.setTextColor(100, 100, 100);
+      pdf.setFontSize(8);
+      pdf.text('Scan for quick access to declaration details', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 15;
+      
+      // Footer
+      pdf.setTextColor(100, 100, 100);
+      pdf.setFontSize(10);
+      pdf.text('This declaration was submitted in compliance with Hawaii Department of Agriculture regulations.', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 6;
+      pdf.text('Keep this receipt for your records during your stay in Hawaii.', pageWidth / 2, yPosition, { align: 'center' });
       
       // Download PDF
       const fileName = `hawaii-declaration-${formData.declarationId || 'receipt'}-${new Date().toISOString().split('T')[0]}.pdf`;
