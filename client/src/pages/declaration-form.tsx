@@ -138,23 +138,62 @@ export default function DeclarationForm() {
     console.log('[DEBUG] handleNext - Form data:', formData);
     
     if (formData.currentStep < TOTAL_STEPS) {
-      // Validate and save current step
-      const stepData = getStepData();
-      console.log('[DEBUG] handleNext - Step data:', stepData);
-      
-      if (stepData && formData.declarationId) {
-        try {
-          console.log('[DEBUG] handleNext - Updating declaration with ID:', formData.declarationId);
-          await updateMutation.mutateAsync(stepData);
-          console.log('[DEBUG] handleNext - Update successful');
-        } catch (error) {
-          console.error('[DEBUG] handleNext - Update error:', error);
-          toast({
-            title: "Validation Error", 
-            description: "Please check your entries and try again",
-            variant: "destructive"
-          });
-          return;
+      // Handle step 7 (Contact Information) specially - create/update user
+      if (formData.currentStep === 7) {
+        const stepData = getStepData();
+        console.log('[DEBUG] handleNext - User data for step 7:', stepData);
+        
+        if (stepData) {
+          try {
+            console.log('[DEBUG] handleNext - Creating/updating user');
+            const userResponse = await fetch('/api/users', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(stepData)
+            });
+            
+            if (!userResponse.ok) {
+              throw new Error('Failed to save user information');
+            }
+            
+            const user = await userResponse.json();
+            console.log('[DEBUG] handleNext - User saved:', user);
+            
+            // Now link the user to the declaration
+            if (formData.declarationId) {
+              console.log('[DEBUG] handleNext - Linking user to declaration');
+              await updateMutation.mutateAsync({ userId: user.id });
+              console.log('[DEBUG] handleNext - User linked to declaration');
+            }
+          } catch (error) {
+            console.error('[DEBUG] handleNext - User save error:', error);
+            toast({
+              title: "Error Saving Information", 
+              description: "Please check your contact information and try again",
+              variant: "destructive"
+            });
+            return;
+          }
+        }
+      } else {
+        // Regular step handling for other steps
+        const stepData = getStepData();
+        console.log('[DEBUG] handleNext - Step data:', stepData);
+        
+        if (stepData && formData.declarationId) {
+          try {
+            console.log('[DEBUG] handleNext - Updating declaration with ID:', formData.declarationId);
+            await updateMutation.mutateAsync(stepData);
+            console.log('[DEBUG] handleNext - Update successful');
+          } catch (error) {
+            console.error('[DEBUG] handleNext - Update error:', error);
+            toast({
+              title: "Validation Error", 
+              description: "Please check your entries and try again",
+              variant: "destructive"
+            });
+            return;
+          }
         }
       }
       
@@ -216,6 +255,12 @@ export default function DeclarationForm() {
         return {
           animalItems: formData.animalItems,
           animalItemsDescription: formData.animalItemsDescription,
+        };
+      case 7:
+        return {
+          fullName: formData.fullName,
+          homeAddress: formData.homeAddress,
+          phoneNumber: formData.phoneNumber,
         };
       default:
         return null;
