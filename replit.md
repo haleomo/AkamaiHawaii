@@ -101,6 +101,8 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
+- July 04, 2025. Implemented contact information collection screen before form submission with automatic user data storage and retrieval
+- July 03, 2025. Implemented location-based greeting feature that changes based on user's local time with Hawaiian phrases
 - July 03, 2025. Updated landing page banner with scenic Hawaiian beach image featuring palm trees and turquoise waters
 - July 03, 2025. Updated Review & Submit and Confirmation pages to display "None Declared" when only "None of Above" is selected for Plant/Food or Animal items
 - July 03, 2025. Implemented draft declarations feature with automatic saving, drafts management page, and ability to continue incomplete forms

@@ -1,9 +1,21 @@
 import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { relations } from "drizzle-orm";
 import { z } from "zod";
+
+// Users table for storing contact information
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  fullName: text("full_name").notNull(),
+  homeAddress: text("home_address").notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
 
 export const declarations = pgTable("declarations", {
   id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
   numberOfPeople: integer("number_of_people").notNull(),
   travelerType: text("traveler_type").notNull(),
   visitFrequency: text("visit_frequency").notNull(),
@@ -27,6 +39,31 @@ export const declarations = pgTable("declarations", {
   submittedAt: timestamp("submitted_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  declarations: many(declarations),
+}));
+
+export const declarationsRelations = relations(declarations, ({ one }) => ({
+  user: one(users, {
+    fields: [declarations.userId],
+    references: [users.id],
+  }),
+}));
+
+// User schemas
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateUserSchema = insertUserSchema.partial();
+
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type User = typeof users.$inferSelect;
+export type UpdateUser = z.infer<typeof updateUserSchema>;
 
 export const insertDeclarationSchema = createInsertSchema(declarations).omit({
   id: true,
@@ -81,6 +118,12 @@ export const plantDeclarationSchema = z.object({
 export const animalDeclarationSchema = z.object({
   animalItems: z.array(z.string()),
   animalItemsDescription: z.string().optional(),
+});
+
+export const userInformationSchema = z.object({
+  fullName: z.string().min(2, "Please enter your full name"),
+  homeAddress: z.string().min(5, "Please enter your complete home address"),
+  phoneNumber: z.string().min(10, "Please enter a valid phone number"),
 });
 
 export const finalSubmissionSchema = z.object({

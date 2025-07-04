@@ -10,7 +10,9 @@ import {
   islandDestinationSchema,
   plantDeclarationSchema,
   animalDeclarationSchema,
-  finalSubmissionSchema
+  userInformationSchema,
+  finalSubmissionSchema,
+  insertUserSchema
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -149,6 +151,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           schema = animalDeclarationSchema;
           break;
         case 7:
+          schema = userInformationSchema;
+          break;
+        case 8:
           schema = finalSubmissionSchema;
           break;
         default:
@@ -195,6 +200,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.log("[DEBUG] DELETE /api/drafts/:id - Error:", error);
       res.status(500).json({ message: "Failed to delete draft" });
+    }
+  });
+
+  // User management routes
+  
+  // Create or update user information
+  app.post("/api/users", async (req, res) => {
+    try {
+      console.log("[DEBUG] POST /api/users - Request body:", req.body);
+      const validatedData = insertUserSchema.parse(req.body);
+      console.log("[DEBUG] POST /api/users - Validated data:", validatedData);
+      
+      // Check if user exists by phone number (assuming phone is unique identifier)
+      const existingUser = await storage.getUserByPhone(validatedData.phoneNumber);
+      
+      let user;
+      if (existingUser) {
+        user = await storage.updateUser(existingUser.id, validatedData);
+        console.log("[DEBUG] POST /api/users - Updated user:", user);
+      } else {
+        user = await storage.createUser(validatedData);
+        console.log("[DEBUG] POST /api/users - Created user:", user);
+      }
+      
+      res.json(user);
+    } catch (error: any) {
+      console.log("[DEBUG] POST /api/users - Error:", error);
+      console.log("[DEBUG] POST /api/users - Error details:", error.errors || error.message);
+      res.status(400).json({ message: "Validation failed", errors: error.errors || error.message });
+    }
+  });
+
+  // Get user by phone number
+  app.get("/api/users/by-phone/:phone", async (req, res) => {
+    try {
+      const phoneNumber = req.params.phone;
+      const user = await storage.getUserByPhone(phoneNumber);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(user);
+    } catch (error: any) {
+      console.log("[DEBUG] GET /api/users/by-phone/:phone - Error:", error);
+      res.status(500).json({ message: "Failed to get user" });
     }
   });
 

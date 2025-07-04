@@ -1,4 +1,4 @@
-import { declarations, type Declaration, type InsertDeclaration, type UpdateDeclaration } from "@shared/schema";
+import { declarations, users, type Declaration, type InsertDeclaration, type UpdateDeclaration, type User, type InsertUser, type UpdateUser } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -9,6 +9,10 @@ export interface IStorage {
   submitDeclaration(id: number): Promise<Declaration | undefined>;
   getDrafts(): Promise<Declaration[]>;
   deleteDraft(id: number): Promise<boolean>;
+  // User management methods
+  getUserByPhone(phoneNumber: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, updates: UpdateUser): Promise<User>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -61,6 +65,29 @@ export class DatabaseStorage implements IStorage {
       .where(eq(declarations.id, id))
       .returning();
     return !!deleted;
+  }
+
+  // User management methods
+  async getUserByPhone(phoneNumber: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.phoneNumber, phoneNumber));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async updateUser(id: number, updates: UpdateUser): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
   }
 }
 

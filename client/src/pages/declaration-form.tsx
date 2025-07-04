@@ -18,7 +18,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { getLocationBasedGreeting, formatLocalTime } from "@/lib/location-greeting";
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 const hawaiianIslands = [
   { id: 'oahu', name: 'Oʻahu (Honolulu)', image: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80&v=2' }, // Diamond Head crater authentic
@@ -250,6 +250,8 @@ export default function DeclarationForm() {
                formData.animalItems.includes('none-of-above') || 
                formData.animalItemsDescription.trim().length > 0;
       case 7:
+        return Boolean(formData.fullName.trim() && formData.homeAddress.trim() && formData.phoneNumber.trim());
+      case 8:
         return true;
       default:
         return false;
@@ -853,8 +855,82 @@ export default function DeclarationForm() {
           </div>
         )}
 
-        {/* Step 7: Review & Submit */}
+        {/* Step 7: Contact Information */}
         {formData.currentStep === 7 && (
+          <div className="py-6 space-y-6">
+            <Card>
+              <CardContent className="pt-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <Users className="w-6 h-6 mr-2 text-hawaii-blue" />
+                  Contact Information
+                </h2>
+                <p className="text-sm text-gray-600 mb-6">
+                  Please provide your contact information. This will be saved securely and auto-filled for future declarations.
+                </p>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
+                      Full Name *
+                    </Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      value={formData.fullName}
+                      onChange={(e) => updateFormData({ fullName: e.target.value })}
+                      className="mt-1"
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="homeAddress" className="text-sm font-medium text-gray-700">
+                      Home Address *
+                    </Label>
+                    <Textarea
+                      id="homeAddress"
+                      value={formData.homeAddress}
+                      onChange={(e) => updateFormData({ homeAddress: e.target.value })}
+                      className="mt-1"
+                      placeholder="Enter your complete home address"
+                      rows={3}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700">
+                      Phone Number *
+                    </Label>
+                    <Input
+                      id="phoneNumber"
+                      type="tel"
+                      value={formData.phoneNumber}
+                      onChange={(e) => updateFormData({ phoneNumber: e.target.value })}
+                      className="mt-1"
+                      placeholder="Enter your phone number"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start space-x-2">
+                    <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-medium mb-1">Privacy Notice</p>
+                      <p>Your contact information is stored securely and will automatically fill future forms for your convenience. This information is only used for official agriculture declaration purposes.</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Step 8: Review & Submit */}
+        {formData.currentStep === 8 && (
           <div className="py-6 space-y-6">
             <Card>
               <CardContent className="pt-6">

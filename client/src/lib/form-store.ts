@@ -21,6 +21,9 @@ export interface FormData {
   animalItems: string[];
   plantItemsDescription: string;
   animalItemsDescription: string;
+  fullName: string;
+  homeAddress: string;
+  phoneNumber: string;
   language: string;
   currentStep: number;
   isSubmitted: boolean;
@@ -53,6 +56,9 @@ const initialFormData: FormData = {
   animalItems: [],
   plantItemsDescription: '',
   animalItemsDescription: '',
+  fullName: '',
+  homeAddress: '',
+  phoneNumber: '',
   language: 'en',
   currentStep: 1,
   isSubmitted: false,
@@ -111,6 +117,12 @@ export const useFormStore = create<FormStore>()(
             return {
               animalItems: formData.animalItems,
               animalItemsDescription: formData.animalItemsDescription,
+            };
+          case 7:
+            return {
+              fullName: formData.fullName,
+              homeAddress: formData.homeAddress,
+              phoneNumber: formData.phoneNumber,
             };
           default:
             return formData;
