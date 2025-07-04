@@ -354,6 +354,10 @@ export default function Confirmation() {
                 <span className="font-medium">{new Date().toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
+                <span className="text-gray-600">Traveler name:</span>
+                <span className="font-medium">{formData.fullName}</span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-gray-600">Number of travelers:</span>
                 <span className="font-medium">{formData.numberOfPeople}</span>
               </div>
