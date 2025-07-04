@@ -16,6 +16,7 @@ import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 import { useFormStore } from "@/lib/form-store";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from "wouter";
+import { getLocationBasedGreeting, formatLocalTime } from "@/lib/location-greeting";
 
 const TOTAL_STEPS = 7;
 
@@ -53,6 +54,8 @@ export default function DeclarationForm() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [greeting, setGreeting] = useState(getLocationBasedGreeting());
+  const [currentTime, setCurrentTime] = useState(formatLocalTime());
 
   // Create or get declaration
   const { data: declaration, isLoading } = useQuery({
@@ -116,6 +119,19 @@ export default function DeclarationForm() {
       });
     },
   });
+
+  // Update greeting and time periodically
+  useEffect(() => {
+    const updateGreetingAndTime = () => {
+      setGreeting(getLocationBasedGreeting());
+      setCurrentTime(formatLocalTime());
+    };
+
+    // Update every minute
+    const interval = setInterval(updateGreetingAndTime, 60000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const handleNext = async () => {
     console.log('[DEBUG] handleNext - Current step:', formData.currentStep);
@@ -272,11 +288,19 @@ export default function DeclarationForm() {
                   className="w-full h-32 object-cover rounded-lg mb-4"
                 />
                 
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">Aloha! Welcome to Hawaiʻi</h2>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                  Help protect Hawaiʻi's unique environment by completing this mandatory agricultural declaration form. 
-                  This digital form replaces the traditional paper version.
-                </p>
+                <div className="mb-4">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-2">{greeting.greeting}</h2>
+                  <p className="text-sm text-gray-500 mb-3 flex items-center">
+                    <Globe className="w-4 h-4 mr-1" />
+                    Local time: {currentTime}
+                  </p>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-2">
+                    {greeting.description}
+                  </p>
+                  <p className="text-hawaii-blue text-sm font-medium">
+                    {greeting.timeContext}
+                  </p>
+                </div>
                 
                 <div className="bg-hawaii-light border border-hawaii-blue/20 rounded-lg p-4">
                   <div className="flex items-start space-x-3">
