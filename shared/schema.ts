@@ -83,17 +83,25 @@ export const travelerInfoSchema = z.object({
   numberOfPeople: z.number().min(1).max(10),
   travelerType: z.enum(["visitor", "resident", "moving"]),
   visitFrequency: z.enum(["1st", "2nd", "3rd", "4th", "5th", "6-10", "10+"]).optional(),
-  duration: z.enum(["hours", "overnight"]),
+  duration: z.enum(["hours", "overnight"]).optional(),
 }).refine((data) => {
   // Visit frequency is only required for visitors and people moving to Hawaii
   if (data.travelerType === "visitor" || data.travelerType === "moving") {
     return data.visitFrequency !== undefined;
   }
-  // For residents, visit frequency is not required
   return true;
 }, {
   message: "Visit frequency is required for visitors and people moving to Hawaii",
   path: ["visitFrequency"],
+}).refine((data) => {
+  // Duration is only required for visitors and people moving to Hawaii
+  if (data.travelerType === "visitor" || data.travelerType === "moving") {
+    return data.duration !== undefined;
+  }
+  return true;
+}, {
+  message: "Duration is required for visitors and people moving to Hawaii",
+  path: ["duration"],
 });
 
 export const arrivalInfoSchema = z.object({

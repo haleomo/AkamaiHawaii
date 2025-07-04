@@ -281,7 +281,11 @@ export default function DeclarationForm() {
         const visitFrequencyRequired = (formData.travelerType === 'visitor' || formData.travelerType === 'moving') 
           ? Boolean(formData.visitFrequency) 
           : true;
-        return Boolean(formData.numberOfPeople > 0 && formData.travelerType && formData.duration && visitFrequencyRequired);
+        // Duration is only required for visitors and people moving to Hawaii
+        const durationRequired = (formData.travelerType === 'visitor' || formData.travelerType === 'moving')
+          ? Boolean(formData.duration)
+          : true;
+        return Boolean(formData.numberOfPeople > 0 && formData.travelerType && visitFrequencyRequired && durationRequired);
       case 3:
         if (formData.arrivalMethod === 'flight') {
           console.log('flight %s airline %s departure %s', formData.flightNumber, formData.airline, formData.departureLocation);
@@ -467,9 +471,9 @@ export default function DeclarationForm() {
                       value={formData.travelerType} 
                       onValueChange={(value) => {
                         updateFormData({ travelerType: value as any });
-                        // Clear visit frequency when switching to resident since it's not required
+                        // Clear visit frequency and duration when switching to resident since they're not required
                         if (value === 'resident') {
-                          updateFormData({ visitFrequency: '' });
+                          updateFormData({ visitFrequency: '', duration: '' });
                         }
                       }}
                       className="space-y-2"
@@ -515,25 +519,28 @@ export default function DeclarationForm() {
                     </div>
                   )}
                   
-                  <div>
-                    <Label className="block text-sm font-medium text-gray-700 mb-3">
-                      I will be in the Hawaiian Islands for <span className="text-red-500">*</span>
-                    </Label>
-                    <RadioGroup 
-                      value={formData.duration} 
-                      onValueChange={(value) => updateFormData({ duration: value as any })}
-                      className="space-y-2"
-                    >
-                      <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
-                        <RadioGroupItem value="hours" id="hours" />
-                        <Label htmlFor="hours" className="text-sm text-gray-700 cursor-pointer">A few hours only (transit)</Label>
-                      </div>
-                      <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
-                        <RadioGroupItem value="overnight" id="overnight" />
-                        <Label htmlFor="overnight" className="text-sm text-gray-700 cursor-pointer">One night or more</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
+                  {/* Only show duration for visitors and people moving to Hawaii */}
+                  {(formData.travelerType === 'visitor' || formData.travelerType === 'moving') && (
+                    <div>
+                      <Label className="block text-sm font-medium text-gray-700 mb-3">
+                        I will be in the Hawaiian Islands for <span className="text-red-500">*</span>
+                      </Label>
+                      <RadioGroup 
+                        value={formData.duration} 
+                        onValueChange={(value) => updateFormData({ duration: value as any })}
+                        className="space-y-2"
+                      >
+                        <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
+                          <RadioGroupItem value="hours" id="hours" />
+                          <Label htmlFor="hours" className="text-sm text-gray-700 cursor-pointer">A few hours only (transit)</Label>
+                        </div>
+                        <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
+                          <RadioGroupItem value="overnight" id="overnight" />
+                          <Label htmlFor="overnight" className="text-sm text-gray-700 cursor-pointer">One night or more</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
