@@ -122,11 +122,6 @@ export default function Confirmation() {
       pdf.text(`Submitted: ${new Date().toLocaleString()}`, pageWidth / 2, yPosition, { align: 'center' });
       yPosition += 20;
       
-      // Draw column separator line
-      pdf.setLineWidth(0.5);
-      pdf.setDrawColor(200, 200, 200);
-      pdf.line(margin + columnWidth + (margin / 2), yPosition, margin + columnWidth + (margin / 2), 280);
-      
       // LEFT COLUMN
       let leftY = yPosition;
       
