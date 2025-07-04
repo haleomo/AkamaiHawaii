@@ -101,6 +101,7 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
+- July 04, 2025. Updated QR code content to use Share button URL instead of declaration data for better functionality
 - July 04, 2025. Refactored airline dropdown to use constant array airlineNames instead of hardcoded HTML for better maintainability
 - July 04, 2025. Updated "Cruise Ship / Ferry" label to "Cruise Ship" for cleaner UI text
 - July 04, 2025. Hidden departure location field for commercial flights - only shows for cruise ships/ferries and other vessel types with required validation

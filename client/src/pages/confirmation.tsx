@@ -29,22 +29,10 @@ export default function Confirmation() {
 
   const generateQRCode = async () => {
     try {
-      // Count total items declared (excluding "none-of-above")
-      const plantItemsCount = formData.plantItems.filter(item => item !== 'none-of-above').length;
-      const animalItemsCount = formData.animalItems.filter(item => item !== 'none-of-above').length;
-      const totalItemsCount = plantItemsCount + animalItemsCount;
-
-      // Create QR code data
-      const qrData = {
-        declarationId: formData.declarationId,
-        submittedAt: new Date().toISOString(),
-        itemsCount: totalItemsCount,
-        travelerName: formData.fullName,
-        arrivalDate: formData.arrivalDate
-      };
-
-      const qrString = JSON.stringify(qrData);
-      const qrCodeURL = await QRCode.toDataURL(qrString, {
+      // Use the same URL as the Share button
+      const shareUrl = window.location.href;
+      
+      const qrCodeURL = await QRCode.toDataURL(shareUrl, {
         width: 200,
         margin: 1,
         color: {
@@ -68,21 +56,9 @@ export default function Confirmation() {
     setIsGeneratingPDF(true);
     
     try {
-      // Generate QR code specifically for PDF
-      const plantItemsCount = formData.plantItems.filter(item => item !== 'none-of-above').length;
-      const animalItemsCount = formData.animalItems.filter(item => item !== 'none-of-above').length;
-      const totalItemsCount = plantItemsCount + animalItemsCount;
-
-      const qrData = {
-        declarationId: formData.declarationId,
-        submittedAt: new Date().toISOString(),
-        itemsCount: totalItemsCount,
-        travelerName: formData.fullName,
-        arrivalDate: formData.arrivalDate
-      };
-
-      const qrString = JSON.stringify(qrData);
-      const pdfQrCode = await QRCode.toDataURL(qrString, {
+      // Generate QR code for PDF using the same URL as the Share button
+      const shareUrl = window.location.href;
+      const pdfQrCode = await QRCode.toDataURL(shareUrl, {
         width: 200,
         margin: 1,
         color: {
@@ -315,7 +291,7 @@ export default function Confirmation() {
       
       pdf.setTextColor(100, 100, 100);
       pdf.setFontSize(8);
-      pdf.text('Scan for quick access to declaration details', pageWidth / 2, yPosition, { align: 'center' });
+      pdf.text('Scan to access your declaration confirmation page', pageWidth / 2, yPosition, { align: 'center' });
       yPosition += 15;
       
       // Footer
