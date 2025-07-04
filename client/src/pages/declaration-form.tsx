@@ -568,7 +568,13 @@ export default function DeclarationForm() {
                     </Label>
                     <RadioGroup 
                       value={formData.arrivalMethod} 
-                      onValueChange={(value) => updateFormData({ arrivalMethod: value as any })}
+                      onValueChange={(value) => {
+                        updateFormData({ arrivalMethod: value as any });
+                        // Clear departure location when switching to flight since it's not needed
+                        if (value === 'flight') {
+                          updateFormData({ departureLocation: '' });
+                        }
+                      }}
                       className="space-y-2"
                     >
                       <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg">
@@ -586,18 +592,21 @@ export default function DeclarationForm() {
                     </RadioGroup>
                   </div>
 
-                  <div>
-                    <Label htmlFor="departureLocation" className="block text-sm font-medium text-gray-700 mb-2">
-                      Departure location {(formData.arrivalMethod === 'ship' || formData.arrivalMethod === 'other') && <span className="text-red-500">*</span>}
-                    </Label>
-                    <Input
-                      id="departureLocation"
-                      value={formData.departureLocation}
-                      onChange={(e) => updateFormData({ departureLocation: e.target.value })}
-                      placeholder="e.g., Los Angeles, CA"
-                      className="w-full"
-                    />
-                  </div>
+                  {/* Only show departure location for ships and other vessel types, not for flights */}
+                  {(formData.arrivalMethod === 'ship' || formData.arrivalMethod === 'other') && (
+                    <div>
+                      <Label htmlFor="departureLocation" className="block text-sm font-medium text-gray-700 mb-2">
+                        Departure location <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="departureLocation"
+                        value={formData.departureLocation}
+                        onChange={(e) => updateFormData({ departureLocation: e.target.value })}
+                        placeholder="e.g., Los Angeles, CA"
+                        className="w-full"
+                      />
+                    </div>
+                  )}
 
                   {formData.arrivalMethod === 'flight' && (
                     <>

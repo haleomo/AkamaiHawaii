@@ -101,7 +101,7 @@ This is a Progressive Web App (PWA) for completing mandatory Hawaii plant and an
 
 ```
 Changelog:
-- July 04, 2025. Made departure location optional for commercial flights while keeping it required for cruise ships/ferries and other vessel types
+- July 04, 2025. Hidden departure location field for commercial flights - only shows for cruise ships/ferries and other vessel types with required validation
 - July 04, 2025. Updated airline dropdown to 7 options: Alaska Airlines, American Airlines, Delta Airlines, Hawaiian Airlines, Southwest Airlines, United Airlines, and Other Airline
 - July 04, 2025. Updated duration requirement to be optional for "Returning Hawaii Resident" users while keeping it mandatory for visitors and people moving to Hawaii  
 - July 04, 2025. Updated visit frequency requirement to be optional for "Returning Hawaii Resident" users while keeping it mandatory for visitors and people moving to Hawaii
