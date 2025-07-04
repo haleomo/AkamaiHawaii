@@ -20,6 +20,17 @@ import { getLocationBasedGreeting, formatLocalTime } from "@/lib/location-greeti
 
 const TOTAL_STEPS = 9;
 
+// Constants for dropdown options
+const AIRLINE_OPTIONS = [
+  'Alaska Airlines',
+  'American Airlines', 
+  'Delta Airlines',
+  'Hawaiian Airlines',
+  'Southwest Airlines',
+  'United Airlines',
+  'Other Airline'
+];
+
 const hawaiianIslands = [
   { id: 'oahu', name: 'Oʻahu (Honolulu)', image: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80&v=2' }, // Diamond Head crater authentic
   { id: 'maui', name: 'Maui', image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80&v=2' }, // Haleakala crater authentic
@@ -623,13 +634,11 @@ export default function DeclarationForm() {
                               <SelectValue placeholder="Select airline" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Alaska Airlines">Alaska Airlines</SelectItem>
-                              <SelectItem value="American Airlines">American Airlines</SelectItem>
-                              <SelectItem value="Delta Airlines">Delta Airlines</SelectItem>
-                              <SelectItem value="Hawaiian Airlines">Hawaiian Airlines</SelectItem>
-                              <SelectItem value="Southwest Airlines">Southwest Airlines</SelectItem>
-                              <SelectItem value="United Airlines">United Airlines</SelectItem>
-                              <SelectItem value="Other Airline">Other Airline</SelectItem>
+                              {AIRLINE_OPTIONS.map((airline) => (
+                                <SelectItem key={airline} value={airline}>
+                                  {airline}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
