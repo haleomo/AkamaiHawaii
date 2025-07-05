@@ -1,14 +1,14 @@
-# Tides Hub - Gig Harbor High School Platform
+# Tides Hub - Tides Girls Water Polo Platform
 
 ## Overview
 
-Tides Hub is a full-stack web application designed for Gig Harbor High School students and staff. It provides a centralized platform for managing school events, facilitating communication through chat channels, and sharing photos/memories. The application uses a modern tech stack with React frontend, Express backend, and PostgreSQL database.
+Tides Hub is a full-stack web application designed for the Tides Girls Water Polo team. It provides a centralized platform for managing team events, facilitating communication through chat channels, and sharing photos/memories. The application uses a modern tech stack with React frontend, Express backend, and PostgreSQL database.
 
 ## System Architecture
 
 ### Frontend Architecture
 - **Framework**: React 18 with TypeScript
-- **Styling**: Tailwind CSS with custom Gig Harbor High School branding (navy, columbia blue, wave colors)
+- **Styling**: Tailwind CSS with custom Tides Girls Water Polo branding (navy, columbia blue, wave colors)
 - **UI Components**: Radix UI primitives with shadcn/ui component library
 - **State Management**: TanStack React Query for server state management
 - **Routing**: Wouter for client-side routing
@@ -53,7 +53,7 @@ Tides Hub is a full-stack web application designed for Gig Harbor High School st
 ### 4. User Interface
 - Mobile-responsive design
 - Tab-based navigation between features
-- School-branded color scheme and styling
+- Water polo team-branded color scheme and styling
 - Consistent component library usage
 - Accessibility considerations with proper ARIA labels
 

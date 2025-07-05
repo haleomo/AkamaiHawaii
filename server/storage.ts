@@ -58,11 +58,11 @@ export class MemStorage implements IStorage {
 
     this.events.set(1, {
       id: 1,
-      title: "Basketball vs. Peninsula",
+      title: "Water Polo vs. Peninsula",
       description: "Home game against Peninsula High School",
       startDate: tomorrow,
       endDate: null,
-      location: "Gymnasium",
+      location: "Pool",
       category: "sports",
       createdBy: null,
       createdAt: now
@@ -95,7 +95,7 @@ export class MemStorage implements IStorage {
     // Sample messages
     this.messages.set(1, {
       id: 1,
-      content: "Hey everyone! Don't forget about the basketball game tonight! 🏀",
+      content: "Hey everyone! Don't forget about the water polo game tonight! 🏊‍♀️",
       channel: "general",
       authorName: "Maya Rodriguez",
       authorInitials: "MR",
@@ -115,7 +115,7 @@ export class MemStorage implements IStorage {
 
     this.messages.set(3, {
       id: 3,
-      content: "Anyone want to carpool? Meeting at the harbor parking lot at 6:30",
+      content: "Anyone want to carpool? Meeting at the aquatic center parking lot at 6:30",
       channel: "general",
       authorName: "Alex Smith",
       authorInitials: "AS",

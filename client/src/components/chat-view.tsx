@@ -219,7 +219,7 @@ export default function ChatView() {
           <div className="flex-1 relative">
             <Input
               type="text"
-              placeholder="Share with the Tide..."
+              placeholder="Share with the team..."
               value={messageContent}
               onChange={(e) => setMessageContent(e.target.value)}
               onKeyPress={handleKeyPress}

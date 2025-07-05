@@ -75,7 +75,7 @@ export default function EventForm({ onSuccess }: EventFormProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-slate-800">Create New Event</h2>
-        <p className="text-slate-600">Add an event to the Tide calendar</p>
+        <p className="text-slate-600">Add an event to the team calendar</p>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -84,7 +84,7 @@ export default function EventForm({ onSuccess }: EventFormProps) {
           <Input
             id="title"
             {...form.register("title")}
-            placeholder="Basketball vs. Peninsula"
+            placeholder="Water Polo vs. Peninsula"
           />
           {form.formState.errors.title && (
             <p className="text-sm text-red-500 mt-1">
@@ -132,7 +132,7 @@ export default function EventForm({ onSuccess }: EventFormProps) {
           <Input
             id="location"
             {...form.register("location")}
-            placeholder="Gymnasium, Main Hall, etc."
+            placeholder="Pool, Aquatic Center, etc."
           />
         </div>
 

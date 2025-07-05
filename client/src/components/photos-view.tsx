@@ -162,7 +162,7 @@ export default function PhotosView() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-slate-800">Tide Memories</h2>
-              <p className="text-slate-600">Share your school moments</p>
+              <p className="text-slate-600">Share your team moments</p>
             </div>
             <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
               <DialogTrigger asChild>
@@ -175,7 +175,7 @@ export default function PhotosView() {
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-lg font-semibold">Upload Photo</h3>
-                    <p className="text-sm text-slate-600">Share your memories with the Tide community</p>
+                    <p className="text-sm text-slate-600">Share your memories with the team</p>
                   </div>
                   <div className="space-y-4">
                     <div>
@@ -202,7 +202,7 @@ export default function PhotosView() {
                         id="event"
                         value={uploadData.event}
                         onChange={(e) => setUploadData(prev => ({ ...prev, event: e.target.value }))}
-                        placeholder="Basketball, Dance, etc."
+                        placeholder="Water Polo Game, Practice, etc."
                       />
                     </div>
                     <div>
@@ -275,7 +275,7 @@ export default function PhotosView() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Events</SelectItem>
-                  <SelectItem value="basketball">Basketball</SelectItem>
+                  <SelectItem value="water-polo">Water Polo</SelectItem>
                   <SelectItem value="dance">Dances</SelectItem>
                   <SelectItem value="academic">Academic</SelectItem>
                 </SelectContent>

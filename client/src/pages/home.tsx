@@ -28,7 +28,7 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-navy">Tides Hub</h1>
-                <p className="text-xs text-slate-500">Gig Harbor High School</p>
+                <p className="text-xs text-slate-500">Tides Girls Water Polo</p>
               </div>
             </div>
             

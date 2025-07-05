@@ -86,7 +86,7 @@ export default function CalendarView() {
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold">Tide Calendar</h2>
-            <p className="text-blue-100">Navigate your school events</p>
+            <p className="text-blue-100">Navigate your team events</p>
           </div>
           <Dialog open={isEventFormOpen} onOpenChange={setIsEventFormOpen}>
             <DialogTrigger asChild>
