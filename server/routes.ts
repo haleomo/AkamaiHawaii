@@ -52,24 +52,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events", async (req, res) => {
     try {
-      const validatedData = insertEventSchema.parse(req.body);
+      // Transform date strings to Date objects
+      const eventData = {
+        ...req.body,
+        startDate: req.body.startDate ? new Date(req.body.startDate) : undefined,
+        endDate: req.body.endDate ? new Date(req.body.endDate) : undefined,
+      };
+      
+      const validatedData = insertEventSchema.parse(eventData);
       const event = await storage.createEvent(validatedData);
       res.status(201).json(event);
     } catch (error) {
-      res.status(400).json({ message: "Invalid event data" });
+      console.error("Event creation error:", error);
+      res.status(400).json({ message: "Invalid event data", error: error.message });
     }
   });
 
   app.put("/api/events/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const validatedData = insertEventSchema.partial().parse(req.body);
+      
+      // Transform date strings to Date objects
+      const eventData = {
+        ...req.body,
+        startDate: req.body.startDate ? new Date(req.body.startDate) : undefined,
+        endDate: req.body.endDate ? new Date(req.body.endDate) : undefined,
+      };
+      
+      const validatedData = insertEventSchema.partial().parse(eventData);
       const event = await storage.updateEvent(id, validatedData);
       if (!event) {
         return res.status(404).json({ message: "Event not found" });
       }
       res.json(event);
     } catch (error) {
+      console.error("Event update error:", error);
       res.status(400).json({ message: "Invalid event data" });
     }
   });
