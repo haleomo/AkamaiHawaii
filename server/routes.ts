@@ -125,6 +125,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/messages/:id/inappropriate", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.markMessageInappropriate(id);
+      if (!success) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+      res.status(200).json({ message: "Message marked as inappropriate" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to mark message as inappropriate" });
+    }
+  });
+
   // Photos endpoints
   app.get("/api/photos", async (req, res) => {
     try {

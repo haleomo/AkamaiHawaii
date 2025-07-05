@@ -3,9 +3,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
-import { Anchor, Send, Search, Settings, Paperclip, Smile } from "lucide-react";
+import { Anchor, Send, Search, Settings, Paperclip, Smile, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import type { Message } from "@shared/schema";
 
 const channels = [
@@ -44,6 +45,7 @@ export default function ChatView() {
   const [messageContent, setMessageContent] = useState("");
   const [authorName, setAuthorName] = useState("Student");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const { data: messages = [], isLoading } = useQuery<Message[]>({
     queryKey: ["/api/messages", activeChannel],
@@ -64,6 +66,27 @@ export default function ChatView() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
       setMessageContent("");
+    },
+  });
+
+  const markInappropriateMutation = useMutation({
+    mutationFn: async (messageId: number) => {
+      const response = await apiRequest("PATCH", `/api/messages/${messageId}/inappropriate`, {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+      toast({
+        title: "Message flagged",
+        description: "The message has been marked as inappropriate and hidden.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to flag message. Please try again.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -174,7 +197,7 @@ export default function ChatView() {
             </div>
 
             {messages.map((message) => (
-              <div key={message.id} className="flex items-start space-x-3">
+              <div key={message.id} className="flex items-start space-x-3 group">
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: message.authorColor }}
@@ -193,6 +216,17 @@ export default function ChatView() {
                     </span>
                   </div>
                   <p className="text-slate-700">{message.content}</p>
+                </div>
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => markInappropriateMutation.mutate(message.id)}
+                    className="text-slate-400 hover:text-red-500 hover:bg-red-50"
+                    title="Mark as inappropriate"
+                  >
+                    <Flag className="w-3 h-3" />
+                  </Button>
                 </div>
               </div>
             ))}

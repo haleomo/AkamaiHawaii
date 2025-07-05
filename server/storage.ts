@@ -1,6 +1,6 @@
 import { users, events, messages, photos, type User, type InsertUser, type Event, type InsertEvent, type Message, type InsertMessage, type Photo, type InsertPhoto } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -19,6 +19,7 @@ export interface IStorage {
   getMessages(channel?: string): Promise<Message[]>;
   getMessage(id: number): Promise<Message | undefined>;
   createMessage(message: InsertMessage): Promise<Message>;
+  markMessageInappropriate(id: number): Promise<boolean>;
   
   // Photo methods
   getPhotos(): Promise<Photo[]>;
@@ -82,9 +83,13 @@ export class DatabaseStorage implements IStorage {
   // Message methods
   async getMessages(channel?: string): Promise<Message[]> {
     if (channel) {
-      return await db.select().from(messages).where(eq(messages.channel, channel)).orderBy(messages.createdAt);
+      return await db.select().from(messages)
+        .where(and(eq(messages.channel, channel), eq(messages.inappropriate, "false")))
+        .orderBy(messages.createdAt);
     }
-    return await db.select().from(messages).orderBy(messages.createdAt);
+    return await db.select().from(messages)
+      .where(eq(messages.inappropriate, "false"))
+      .orderBy(messages.createdAt);
   }
 
   async getMessage(id: number): Promise<Message | undefined> {
@@ -98,6 +103,14 @@ export class DatabaseStorage implements IStorage {
       .values(insertMessage)
       .returning();
     return message;
+  }
+
+  async markMessageInappropriate(id: number): Promise<boolean> {
+    const result = await db
+      .update(messages)
+      .set({ inappropriate: "true" })
+      .where(eq(messages.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   // Photo methods

@@ -27,6 +27,7 @@ export const messages = pgTable("messages", {
   authorName: text("author_name").notNull(),
   authorInitials: text("author_initials").notNull(),
   authorColor: text("author_color").notNull(),
+  inappropriate: text("inappropriate").notNull().default("false"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -57,6 +58,7 @@ export const insertEventSchema = createInsertSchema(events).omit({
 export const insertMessageSchema = createInsertSchema(messages).omit({
   id: true,
   createdAt: true,
+  inappropriate: true,
 });
 
 export const insertPhotoSchema = createInsertSchema(photos).omit({
