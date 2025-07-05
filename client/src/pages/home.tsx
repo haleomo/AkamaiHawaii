@@ -23,8 +23,12 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             {/* Logo Section */}
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 gradient-navy-columbia rounded-full flex items-center justify-center">
-                <Anchor className="text-white" size={20} />
+              <div className="w-10 h-10 flex items-center justify-center">
+                <img 
+                  src="https://files.smartsites.parentsquare.com/5437/header_logo_img_26xxd1.png" 
+                  alt="Gig Harbor High School Logo" 
+                  className="w-10 h-10 object-contain"
+                />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-navy">Tides Hub</h1>
