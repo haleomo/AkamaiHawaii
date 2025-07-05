@@ -33,9 +33,9 @@ Tides Hub is a full-stack web application designed for the Tides Girls Water Pol
 ### 1. Event Management System
 - Calendar view with monthly navigation
 - Event creation, editing, and deletion
-- Category-based organization (general, sports, academics, etc.)
+- Water polo-specific categories (Games, Team Events, Practice, Training, Team Meetings, Award Ceremonies)
 - Date/time handling with proper timezone support
-- Color-coded events by category
+- Color-coded events by category with team-specific color scheme
 
 ### 2. Chat System ("Tide Talk")
 - Multi-channel chat (general, announcements, sports, homework-help, events)

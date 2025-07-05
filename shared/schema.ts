@@ -15,7 +15,7 @@ export const events = pgTable("events", {
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date"),
   location: text("location"),
-  category: text("category").notNull().default("general"),
+  category: text("category").notNull().default("games"),
   createdBy: integer("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

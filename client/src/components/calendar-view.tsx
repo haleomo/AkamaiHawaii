@@ -49,12 +49,18 @@ export default function CalendarView() {
 
   const getEventColor = (category: string) => {
     switch (category) {
-      case "sports":
+      case "games":
         return "bg-navy text-white";
-      case "social":
+      case "team-events":
         return "bg-columbia text-white";
-      case "academic":
+      case "practice":
         return "bg-wave text-white";
+      case "training":
+        return "bg-emerald-600 text-white";
+      case "team-meetings":
+        return "bg-purple-600 text-white";
+      case "award-ceremonies":
+        return "bg-amber-600 text-white";
       default:
         return "bg-slate-500 text-white";
     }

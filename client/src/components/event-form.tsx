@@ -35,7 +35,7 @@ export default function EventForm({ onSuccess }: EventFormProps) {
       startDate: "",
       endDate: "",
       location: "",
-      category: "general",
+      category: "games",
     },
   });
 
@@ -146,11 +146,12 @@ export default function EventForm({ onSuccess }: EventFormProps) {
               <SelectValue placeholder="Select a category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="general">General</SelectItem>
-              <SelectItem value="sports">Sports</SelectItem>
-              <SelectItem value="social">Social</SelectItem>
-              <SelectItem value="academic">Academic</SelectItem>
-              <SelectItem value="arts">Arts & Music</SelectItem>
+              <SelectItem value="games">Games</SelectItem>
+              <SelectItem value="team-events">Team Events</SelectItem>
+              <SelectItem value="practice">Practice</SelectItem>
+              <SelectItem value="training">Training</SelectItem>
+              <SelectItem value="team-meetings">Team Meetings</SelectItem>
+              <SelectItem value="award-ceremonies">Award Ceremonies</SelectItem>
             </SelectContent>
           </Select>
         </div>
