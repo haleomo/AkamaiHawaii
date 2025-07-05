@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Anchor } from "lucide-react";
+import { SiInstagram } from "react-icons/si";
 import CalendarView from "@/components/calendar-view";
 import ChatView from "@/components/chat-view";
 import PhotosView from "@/components/photos-view";
@@ -83,6 +84,23 @@ export default function Home() {
         {activeTab === "chat" && <ChatView />}
         {activeTab === "photos" && <PhotosView />}
       </div>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-slate-200 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center">
+            <a
+              href="https://www.instagram.com/ghhsgirls_waterpolo/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-2 text-slate-600 hover:text-columbia transition-colors duration-200"
+            >
+              <SiInstagram className="w-6 h-6" />
+              <span className="text-sm font-medium">Follow @ghhsgirls_waterpolo</span>
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
