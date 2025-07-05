@@ -26,7 +26,7 @@ Tides Hub is a full-stack web application designed for the Tides Girls Water Pol
 - **ORM**: Drizzle ORM for type-safe database operations
 - **Schema Management**: Drizzle Kit for migrations and schema management
 - **Validation**: Zod schemas for runtime type validation
-- **Fallback**: In-memory storage implementation for development/testing
+- **Storage**: PostgreSQL database with Drizzle ORM for persistent data
 
 ## Key Components
 

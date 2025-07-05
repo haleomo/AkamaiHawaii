@@ -1,4 +1,6 @@
 import { users, events, messages, photos, type User, type InsertUser, type Event, type InsertEvent, type Message, type InsertMessage, type Photo, type InsertPhoto } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -25,207 +27,101 @@ export interface IStorage {
   deletePhoto(id: number): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private events: Map<number, Event>;
-  private messages: Map<number, Message>;
-  private photos: Map<number, Photo>;
-  private currentUserId: number;
-  private currentEventId: number;
-  private currentMessageId: number;
-  private currentPhotoId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.events = new Map();
-    this.messages = new Map();
-    this.photos = new Map();
-    this.currentUserId = 1;
-    this.currentEventId = 1;
-    this.currentMessageId = 1;
-    this.currentPhotoId = 1;
-
-    // Initialize with some sample data
-    this.initializeData();
-  }
-
-  private initializeData() {
-    // Sample events
-    const now = new Date();
-    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const nextMonth = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-
-    this.events.set(1, {
-      id: 1,
-      title: "Water Polo vs. Peninsula",
-      description: "Home game against Peninsula High School",
-      startDate: tomorrow,
-      endDate: null,
-      location: "Pool",
-      category: "sports",
-      createdBy: null,
-      createdAt: now
-    });
-
-    this.events.set(2, {
-      id: 2,
-      title: "Spring Dance",
-      description: "Annual spring formal dance",
-      startDate: nextWeek,
-      endDate: null,
-      location: "Main Hall",
-      category: "social",
-      createdBy: null,
-      createdAt: now
-    });
-
-    this.events.set(3, {
-      id: 3,
-      title: "Prom Night",
-      description: "Senior prom at the Harbor View Hotel",
-      startDate: nextMonth,
-      endDate: null,
-      location: "Harbor View Hotel",
-      category: "social",
-      createdBy: null,
-      createdAt: now
-    });
-
-    // Sample messages
-    this.messages.set(1, {
-      id: 1,
-      content: "Hey everyone! Don't forget about the water polo game tonight! 🏊‍♀️",
-      channel: "general",
-      authorName: "Maya Rodriguez",
-      authorInitials: "MR",
-      authorColor: "hsl(220, 70%, 50%)",
-      createdAt: new Date(now.getTime() - 2 * 60 * 60 * 1000)
-    });
-
-    this.messages.set(2, {
-      id: 2,
-      content: "Roll Tide! I'll be there cheering from the stands 🌊",
-      channel: "general",
-      authorName: "Jake Liu",
-      authorInitials: "JL",
-      authorColor: "hsl(200, 70%, 50%)",
-      createdAt: new Date(now.getTime() - 1.5 * 60 * 60 * 1000)
-    });
-
-    this.messages.set(3, {
-      id: 3,
-      content: "Anyone want to carpool? Meeting at the aquatic center parking lot at 6:30",
-      channel: "general",
-      authorName: "Alex Smith",
-      authorInitials: "AS",
-      authorColor: "hsl(150, 70%, 50%)",
-      createdAt: new Date(now.getTime() - 1 * 60 * 60 * 1000)
-    });
-
-    this.currentEventId = 4;
-    this.currentMessageId = 4;
-  }
-
+export class DatabaseStorage implements IStorage {
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   // Event methods
   async getEvents(): Promise<Event[]> {
-    return Array.from(this.events.values()).sort((a, b) => 
-      new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-    );
+    return await db.select().from(events).orderBy(events.startDate);
   }
 
   async getEvent(id: number): Promise<Event | undefined> {
-    return this.events.get(id);
+    const [event] = await db.select().from(events).where(eq(events.id, id));
+    return event || undefined;
   }
 
   async createEvent(insertEvent: InsertEvent): Promise<Event> {
-    const id = this.currentEventId++;
-    const event: Event = {
-      ...insertEvent,
-      id,
-      createdBy: null,
-      createdAt: new Date()
-    };
-    this.events.set(id, event);
+    const [event] = await db
+      .insert(events)
+      .values(insertEvent)
+      .returning();
     return event;
   }
 
   async updateEvent(id: number, updateData: Partial<InsertEvent>): Promise<Event | undefined> {
-    const event = this.events.get(id);
-    if (!event) return undefined;
-
-    const updatedEvent = { ...event, ...updateData };
-    this.events.set(id, updatedEvent);
-    return updatedEvent;
+    const [event] = await db
+      .update(events)
+      .set(updateData)
+      .where(eq(events.id, id))
+      .returning();
+    return event || undefined;
   }
 
   async deleteEvent(id: number): Promise<boolean> {
-    return this.events.delete(id);
+    const result = await db.delete(events).where(eq(events.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
   // Message methods
   async getMessages(channel?: string): Promise<Message[]> {
-    const allMessages = Array.from(this.messages.values());
-    const filtered = channel ? allMessages.filter(msg => msg.channel === channel) : allMessages;
-    return filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    if (channel) {
+      return await db.select().from(messages).where(eq(messages.channel, channel)).orderBy(messages.createdAt);
+    }
+    return await db.select().from(messages).orderBy(messages.createdAt);
   }
 
   async getMessage(id: number): Promise<Message | undefined> {
-    return this.messages.get(id);
+    const [message] = await db.select().from(messages).where(eq(messages.id, id));
+    return message || undefined;
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
-    const id = this.currentMessageId++;
-    const message: Message = {
-      ...insertMessage,
-      id,
-      createdAt: new Date()
-    };
-    this.messages.set(id, message);
+    const [message] = await db
+      .insert(messages)
+      .values(insertMessage)
+      .returning();
     return message;
   }
 
   // Photo methods
   async getPhotos(): Promise<Photo[]> {
-    return Array.from(this.photos.values()).sort((a, b) => 
-      new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
-    );
+    return await db.select().from(photos).orderBy(photos.uploadedAt);
   }
 
   async getPhoto(id: number): Promise<Photo | undefined> {
-    return this.photos.get(id);
+    const [photo] = await db.select().from(photos).where(eq(photos.id, id));
+    return photo || undefined;
   }
 
   async createPhoto(insertPhoto: InsertPhoto): Promise<Photo> {
-    const id = this.currentPhotoId++;
-    const photo: Photo = {
-      ...insertPhoto,
-      id,
-      uploadedAt: new Date()
-    };
-    this.photos.set(id, photo);
+    const [photo] = await db
+      .insert(photos)
+      .values(insertPhoto)
+      .returning();
     return photo;
   }
 
   async deletePhoto(id: number): Promise<boolean> {
-    return this.photos.delete(id);
+    const result = await db.delete(photos).where(eq(photos.id, id));
+    return (result.rowCount || 0) > 0;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
