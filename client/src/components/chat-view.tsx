@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
-import { Anchor, Send, Search, Settings, Paperclip, Smile, Flag } from "lucide-react";
+import { Anchor, Send, Search, Settings, Paperclip, Smile, Flag, Circle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -142,7 +142,38 @@ export default function ChatView() {
       <div className="gradient-navy-columbia p-4 text-white flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <Anchor className="text-white" size={20} />
+            <svg width="20" height="20" viewBox="0 0 24 24" className="text-white">
+              {/* Water polo ball */}
+              <circle 
+                cx="12" 
+                cy="12" 
+                r="10" 
+                fill="currentColor" 
+                stroke="currentColor" 
+                strokeWidth="0.5"
+              />
+              {/* Panel lines */}
+              <path 
+                d="M2 12 Q12 2 22 12 Q12 22 2 12" 
+                fill="none" 
+                stroke="rgba(0,0,0,0.2)" 
+                strokeWidth="1"
+              />
+              <path 
+                d="M12 2 Q22 12 12 22 Q2 12 12 2" 
+                fill="none" 
+                stroke="rgba(0,0,0,0.2)" 
+                strokeWidth="1"
+              />
+              <circle 
+                cx="12" 
+                cy="12" 
+                r="6" 
+                fill="none" 
+                stroke="rgba(0,0,0,0.15)" 
+                strokeWidth="0.8"
+              />
+            </svg>
           </div>
           <div>
             <h2 className="text-xl font-bold">Tide Talk</h2>
