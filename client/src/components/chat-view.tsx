@@ -148,40 +148,32 @@ export default function ChatView() {
                 cx="12" 
                 cy="12" 
                 r="10" 
-                fill="currentColor" 
-                stroke="none"
+                fill="currentColor"
               />
-              {/* Volleyball panel lines - classic pattern */}
+              {/* Classic volleyball panel pattern */}
+              {/* Left curved panel */}
               <path 
-                d="M2.5 8.5 Q12 1 21.5 8.5 Q12 4 12 12 Q12 20 21.5 15.5 Q12 23 2.5 15.5 Q12 20 12 12 Q12 4 2.5 8.5 Z" 
+                d="M2.2 12 Q7 2.2 12 4 Q17 2.2 21.8 12 Q17 21.8 12 20 Q7 21.8 2.2 12 Z" 
+                fill="none" 
+                stroke="rgba(0,0,0,0.4)" 
+                strokeWidth="1.5"
+              />
+              {/* Right curved panel - mirrored */}
+              <path 
+                d="M21.8 12 Q17 2.2 12 4 Q7 2.2 2.2 12 Q7 21.8 12 20 Q17 21.8 21.8 12 Z" 
+                fill="none" 
+                stroke="rgba(0,0,0,0.4)" 
+                strokeWidth="1.5"
+              />
+              {/* Horizontal center seam */}
+              <ellipse 
+                cx="12" 
+                cy="12" 
+                rx="10" 
+                ry="2" 
                 fill="none" 
                 stroke="rgba(0,0,0,0.3)" 
                 strokeWidth="1.2"
-              />
-              {/* Vertical center line */}
-              <path 
-                d="M12 2 L12 22" 
-                stroke="rgba(0,0,0,0.25)" 
-                strokeWidth="1"
-              />
-              {/* Horizontal center line */}
-              <path 
-                d="M2 12 L22 12" 
-                stroke="rgba(0,0,0,0.25)" 
-                strokeWidth="1"
-              />
-              {/* Curved panel segments */}
-              <path 
-                d="M7 4.5 Q12 8 17 4.5" 
-                fill="none" 
-                stroke="rgba(0,0,0,0.2)" 
-                strokeWidth="0.8"
-              />
-              <path 
-                d="M7 19.5 Q12 16 17 19.5" 
-                fill="none" 
-                stroke="rgba(0,0,0,0.2)" 
-                strokeWidth="0.8"
               />
             </svg>
           </div>
