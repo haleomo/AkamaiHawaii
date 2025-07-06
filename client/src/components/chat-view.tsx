@@ -142,38 +142,37 @@ export default function ChatView() {
       <div className="gradient-navy-columbia p-4 text-white flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 24 24" className="text-white">
-              {/* Water polo ball base */}
+            <svg width="20" height="20" viewBox="0 0 24 24" className="text-white" key="waterpolo-ball-v2">
+              {/* Water polo/volleyball ball */}
               <circle 
                 cx="12" 
                 cy="12" 
-                r="10" 
+                r="9.5" 
                 fill="currentColor"
+                stroke="rgba(0,0,0,0.1)"
+                strokeWidth="0.5"
               />
-              {/* Classic volleyball panel pattern */}
-              {/* Left curved panel */}
+              {/* Main curved seam lines forming the classic volleyball pattern */}
               <path 
-                d="M2.2 12 Q7 2.2 12 4 Q17 2.2 21.8 12 Q17 21.8 12 20 Q7 21.8 2.2 12 Z" 
+                d="M2.5 12 C2.5 6.5 6.5 2.5 12 2.5 C17.5 2.5 21.5 6.5 21.5 12 C17.5 8 16 12 12 12 C8 12 6.5 8 2.5 12 Z" 
                 fill="none" 
-                stroke="rgba(0,0,0,0.4)" 
-                strokeWidth="1.5"
-              />
-              {/* Right curved panel - mirrored */}
-              <path 
-                d="M21.8 12 Q17 2.2 12 4 Q7 2.2 2.2 12 Q7 21.8 12 20 Q17 21.8 21.8 12 Z" 
-                fill="none" 
-                stroke="rgba(0,0,0,0.4)" 
-                strokeWidth="1.5"
-              />
-              {/* Horizontal center seam */}
-              <ellipse 
-                cx="12" 
-                cy="12" 
-                rx="10" 
-                ry="2" 
-                fill="none" 
-                stroke="rgba(0,0,0,0.3)" 
+                stroke="rgba(0,0,0,0.5)" 
                 strokeWidth="1.2"
+              />
+              <path 
+                d="M2.5 12 C6.5 16 8 12 12 12 C16 12 17.5 16 21.5 12 C21.5 17.5 17.5 21.5 12 21.5 C6.5 21.5 2.5 17.5 2.5 12 Z" 
+                fill="none" 
+                stroke="rgba(0,0,0,0.5)" 
+                strokeWidth="1.2"
+              />
+              {/* Center horizontal line */}
+              <line 
+                x1="3" 
+                y1="12" 
+                x2="21" 
+                y2="12" 
+                stroke="rgba(0,0,0,0.4)" 
+                strokeWidth="1"
               />
             </svg>
           </div>
