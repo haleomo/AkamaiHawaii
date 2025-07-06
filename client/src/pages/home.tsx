@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Anchor } from "lucide-react";
+import { Anchor, LogOut, User as UserIcon } from "lucide-react";
 import { SiInstagram } from "react-icons/si";
+import { useAuth } from "@/hooks/useAuth";
+import type { User } from "@shared/schema";
+import { Button } from "@/components/ui/button";
 import CalendarView from "@/components/calendar-view";
 import ChatView from "@/components/chat-view";
 import PhotosView from "@/components/photos-view";
@@ -9,6 +12,7 @@ type TabType = "calendar" | "chat" | "photos";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("calendar");
+  const { user } = useAuth();
 
   const tabs = [
     { id: "calendar" as const, label: "Events", icon: "calendar-alt" },
@@ -53,11 +57,39 @@ export default function Home() {
               ))}
             </div>
             
-            {/* Profile */}
+            {/* User Profile */}
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 gradient-columbia-wave rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">JS</span>
-              </div>
+              {user && (
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2">
+                    {user.profileImageUrl ? (
+                      <img 
+                        src={user.profileImageUrl} 
+                        alt="Profile" 
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-columbia rounded-full flex items-center justify-center">
+                        <UserIcon size={16} className="text-white" />
+                      </div>
+                    )}
+                    <div className="text-sm hidden md:block">
+                      <p className="text-navy font-medium">
+                        {user.firstName || user.email?.split('@')[0] || 'User'}
+                      </p>
+                      <p className="text-xs text-slate-500 capitalize">{user.role}</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => window.location.href = "/api/logout"}
+                    className="text-slate-600 hover:text-navy"
+                  >
+                    <LogOut size={16} />
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
           

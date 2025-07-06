@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage, hasPermission } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertEventSchema, insertMessageSchema, insertPhotoSchema } from "@shared/schema";
 import multer from "multer";
 import path from "path";
@@ -27,9 +28,31 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Events endpoints
-  app.get("/api/events", async (req, res) => {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Events endpoints
+  app.get("/api/events", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!hasPermission(user, 'canViewEvents')) {
+        return res.status(403).json({ message: "Insufficient permissions to view events" });
+      }
+      
       const events = await storage.getEvents();
       res.json(events);
     } catch (error) {
@@ -37,8 +60,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/events/:id", async (req, res) => {
+  app.get("/api/events/:id", isAuthenticated, async (req: any, res) => {
     try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!hasPermission(user, 'canViewEvents')) {
+        return res.status(403).json({ message: "Insufficient permissions to view events" });
+      }
+      
       const id = parseInt(req.params.id);
       const event = await storage.getEvent(id);
       if (!event) {
@@ -50,13 +80,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/events", async (req, res) => {
+  app.post("/api/events", isAuthenticated, async (req: any, res) => {
     try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!hasPermission(user, 'canCreateEvents')) {
+        return res.status(403).json({ message: "Insufficient permissions to create events" });
+      }
+      
       // Transform date strings to Date objects
       const eventData = {
         ...req.body,
         startDate: req.body.startDate ? new Date(req.body.startDate) : undefined,
         endDate: req.body.endDate ? new Date(req.body.endDate) : undefined,
+        createdBy: userId
       };
       
       const validatedData = insertEventSchema.parse(eventData);
@@ -64,7 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(event);
     } catch (error) {
       console.error("Event creation error:", error);
-      res.status(400).json({ message: "Invalid event data", error: error.message });
+      res.status(400).json({ message: "Invalid event data", error: (error as Error).message });
     }
   });
 

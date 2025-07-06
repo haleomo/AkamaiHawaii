@@ -1,12 +1,25 @@
-import { users, events, messages, photos, type User, type InsertUser, type Event, type InsertEvent, type Message, type InsertMessage, type Photo, type InsertPhoto } from "@shared/schema";
+import {
+  users,
+  events,
+  messages,
+  photos,
+  type User,
+  type UpsertUser,
+  type Event,
+  type InsertEvent,
+  type Message,
+  type InsertMessage,
+  type Photo,
+  type InsertPhoto,
+  permissions,
+} from "@shared/schema";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
-  // User methods
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // User methods for Replit Auth
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   // Event methods
   getEvents(): Promise<Event[]>;
@@ -29,28 +42,30 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  // User methods
-  async getUser(id: number): Promise<User | undefined> {
+  // User methods for Replit Auth
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    return user;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
+  async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(insertUser)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
     return user;
   }
 
   // Event methods
   async getEvents(): Promise<Event[]> {
-    return await db.select().from(events).orderBy(events.startDate);
+    return await db.select().from(events);
   }
 
   async getEvent(id: number): Promise<Event | undefined> {
@@ -76,20 +91,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteEvent(id: number): Promise<boolean> {
-    const result = await db.delete(events).where(eq(events.id, id));
-    return (result.rowCount || 0) > 0;
+    const result = await db
+      .delete(events)
+      .where(eq(events.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 
   // Message methods
   async getMessages(channel?: string): Promise<Message[]> {
     if (channel) {
-      return await db.select().from(messages)
-        .where(and(eq(messages.channel, channel), eq(messages.inappropriate, "false")))
-        .orderBy(messages.createdAt);
+      return await db
+        .select()
+        .from(messages)
+        .where(and(eq(messages.channel, channel), eq(messages.inappropriate, "false")));
     }
-    return await db.select().from(messages)
-      .where(eq(messages.inappropriate, "false"))
-      .orderBy(messages.createdAt);
+    return await db
+      .select()
+      .from(messages)
+      .where(eq(messages.inappropriate, "false"));
   }
 
   async getMessage(id: number): Promise<Message | undefined> {
@@ -110,12 +129,12 @@ export class DatabaseStorage implements IStorage {
       .update(messages)
       .set({ inappropriate: "true" })
       .where(eq(messages.id, id));
-    return (result.rowCount || 0) > 0;
+    return result.rowCount !== null && result.rowCount > 0;
   }
 
   // Photo methods
   async getPhotos(): Promise<Photo[]> {
-    return await db.select().from(photos).orderBy(photos.uploadedAt);
+    return await db.select().from(photos);
   }
 
   async getPhoto(id: number): Promise<Photo | undefined> {
@@ -132,9 +151,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deletePhoto(id: number): Promise<boolean> {
-    const result = await db.delete(photos).where(eq(photos.id, id));
-    return (result.rowCount || 0) > 0;
+    const result = await db
+      .delete(photos)
+      .where(eq(photos.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 }
 
 export const storage = new DatabaseStorage();
+
+// Helper function to check user permissions
+export function hasPermission(user: User | undefined, permission: keyof typeof permissions[keyof typeof permissions]): boolean {
+  if (!user) return false;
+  const userRole = user.role as keyof typeof permissions;
+  return permissions[userRole]?.[permission] || false;
+}
+
+// Helper function to get user's role
+export function getUserRole(user: User | undefined): string {
+  return user?.role || "guest";
+}

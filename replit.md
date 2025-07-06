@@ -115,6 +115,18 @@ Tides Hub is a full-stack web application designed for the Tides Girls Water Pol
 - Static files served from `dist/public/`
 
 ## Changelog
+- July 06, 2025: Authentication and Role-Based Access Control Implementation
+  - ✓ Integrated Replit Auth with Google OAuth for secure user authentication
+  - ✓ Implemented comprehensive role-based access control system
+  - ✓ Added five user roles: Administrator, Editor, Contributor, Viewer, Guest
+  - ✓ Created detailed permission matrix for feature access control
+  - ✓ Added landing page for non-authenticated users
+  - ✓ Updated database schema for Replit Auth compatibility
+  - ✓ Protected all API endpoints with authentication and permission checks
+  - ✓ Added user profile display with role information and logout functionality
+  - ✓ Added Instagram logo footer linking to team's official account
+  - ✓ Enhanced water polo ball icon in Tide Talk header
+
 - July 05, 2025: Initial setup and comprehensive feature implementation
   - ✓ Built complete event calendar system with monthly navigation
   - ✓ Implemented multi-channel chat system "Tide Talk" with real-time polling
