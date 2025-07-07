@@ -63,11 +63,11 @@ export const photos = pgTable("photos", {
 
 // Role definitions
 export const roles = {
-  ADMINISTRATOR: "administrator",
-  EDITOR: "editor", 
-  CONTRIBUTOR: "contributor",
-  VIEWER: "viewer",
-  GUEST: "guest"
+  ADMINISTRATOR: "Administrator",
+  EDITOR: "Editor", 
+  CONTRIBUTOR: "Contributor",
+  VIEWER: "Viewer",
+  GUEST: "Guest"
 } as const;
 
 export type UserRole = typeof roles[keyof typeof roles];
