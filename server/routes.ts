@@ -153,13 +153,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/messages", async (req, res) => {
+  app.post("/api/messages", isAuthenticated, async (req: any, res) => {
     try {
-      const validatedData = insertMessageSchema.parse(req.body);
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!hasPermission(user, 'canParticipateInChat')) {
+        return res.status(403).json({ message: "Insufficient permissions to send messages" });
+      }
+      
+      // Add user information to message
+      const messageData = {
+        ...req.body,
+        author: user?.firstName || user?.email?.split('@')[0] || 'User',
+        createdBy: userId
+      };
+      
+      const validatedData = insertMessageSchema.parse(messageData);
       const message = await storage.createMessage(validatedData);
       res.status(201).json(message);
     } catch (error) {
-      res.status(400).json({ message: "Invalid message data" });
+      console.error("Message creation error:", error);
+      res.status(400).json({ message: "Invalid message data", error: (error as Error).message });
     }
   });
 

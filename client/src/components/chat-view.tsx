@@ -7,6 +7,7 @@ import { Anchor, Send, Search, Settings, Paperclip, Smile, Flag, Circle } from "
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import type { Message } from "@shared/schema";
 
 const channels = [
@@ -43,9 +44,9 @@ function getInitials(name: string): string {
 export default function ChatView() {
   const [activeChannel, setActiveChannel] = useState("general");
   const [messageContent, setMessageContent] = useState("");
-  const [authorName, setAuthorName] = useState("Student");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const { data: messages = [], isLoading } = useQuery<Message[]>({
     queryKey: ["/api/messages", activeChannel],
@@ -56,9 +57,6 @@ export default function ChatView() {
     mutationFn: async (messageData: {
       content: string;
       channel: string;
-      authorName: string;
-      authorInitials: string;
-      authorColor: string;
     }) => {
       const response = await apiRequest("POST", "/api/messages", messageData);
       return response.json();
@@ -96,9 +94,6 @@ export default function ChatView() {
     const messageData = {
       content: messageContent,
       channel: activeChannel,
-      authorName,
-      authorInitials: getInitials(authorName),
-      authorColor: getAuthorColor(authorName),
     };
 
     sendMessageMutation.mutate(messageData);
@@ -269,15 +264,6 @@ export default function ChatView() {
 
       {/* Message Input */}
       <div className="border-t border-slate-200 p-4">
-        <div className="flex items-center space-x-2 mb-2">
-          <Input
-            type="text"
-            placeholder="Your name"
-            value={authorName}
-            onChange={(e) => setAuthorName(e.target.value)}
-            className="w-40"
-          />
-        </div>
         <div className="flex items-center space-x-2">
           <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-600">
             <Paperclip className="w-4 h-4" />
