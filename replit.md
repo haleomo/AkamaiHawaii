@@ -142,4 +142,4 @@ Tides Hub is a full-stack web application designed for the Tides Girls Water Pol
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Git repository settings: Preferred commit author "gotides" for project contributions.
+Git repository settings: Preferred commit author "gotides" with email "tidesgirlspolo@gmail.com" for project contributions.
