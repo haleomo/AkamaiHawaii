@@ -163,10 +163,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Add user information to message
+      const authorName = user?.firstName || user?.email?.split('@')[0] || 'User';
       const messageData = {
         ...req.body,
-        author: user?.firstName || user?.email?.split('@')[0] || 'User',
-        createdBy: userId
+        authorName: authorName,
+        authorInitials: authorName.split(' ').map(part => part[0]).join('').toUpperCase().slice(0, 2),
+        authorColor: `hsl(${(authorName.length * 137) % 360}, 70%, 50%)`
       };
       
       const validatedData = insertMessageSchema.parse(messageData);
