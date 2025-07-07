@@ -164,12 +164,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Add user information to message
       const authorName = user?.firstName || user?.email?.split('@')[0] || 'User';
+      
+      // Debug logging
+      console.log('User object:', user);
+      console.log('Author name:', authorName);
+      
       const messageData = {
         ...req.body,
         authorName: authorName,
         authorInitials: authorName.split(' ').map(part => part[0]).join('').toUpperCase().slice(0, 2),
         authorColor: `hsl(${(authorName.length * 137) % 360}, 70%, 50%)`
       };
+      
+      console.log('Message data:', messageData);
       
       const validatedData = insertMessageSchema.parse(messageData);
       const message = await storage.createMessage(validatedData);
