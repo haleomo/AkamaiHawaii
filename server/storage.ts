@@ -162,9 +162,22 @@ export const storage = new DatabaseStorage();
 
 // Helper function to check user permissions
 export function hasPermission(user: User | undefined, permission: keyof typeof permissions[keyof typeof permissions]): boolean {
-  if (!user) return false;
+  console.log('hasPermission called with:', { user, permission });
+  
+  if (!user) {
+    console.log('hasPermission: No user provided');
+    return false;
+  }
+  
   const userRole = user.role as keyof typeof permissions;
-  return permissions[userRole]?.[permission] || false;
+  console.log('hasPermission: User role:', userRole);
+  console.log('hasPermission: Available permissions for role:', permissions[userRole]);
+  console.log('hasPermission: Checking permission:', permission);
+  
+  const result = permissions[userRole]?.[permission] || false;
+  console.log('hasPermission result:', result);
+  
+  return result;
 }
 
 // Helper function to get user's role

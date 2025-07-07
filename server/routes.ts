@@ -49,7 +49,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
+      // Debug logging
+      console.log('GET /api/events - User ID:', userId);
+      console.log('GET /api/events - User object:', user);
+      console.log('GET /api/events - User role:', user?.role);
+      console.log('GET /api/events - hasPermission result:', hasPermission(user, 'canViewEvents'));
+      
       if (!hasPermission(user, 'canViewEvents')) {
+        console.log('GET /api/events - Permission denied for user:', user);
         return res.status(403).json({ message: "Insufficient permissions to view events" });
       }
       
@@ -158,7 +165,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
+      // Debug logging
+      console.log('POST /api/messages - User ID:', userId);
+      console.log('POST /api/messages - User object:', user);
+      console.log('POST /api/messages - User role:', user?.role);
+      console.log('POST /api/messages - hasPermission result:', hasPermission(user, 'canCreateMessages'));
+      
       if (!hasPermission(user, 'canCreateMessages')) {
+        console.log('POST /api/messages - Permission denied for user:', user);
         return res.status(403).json({ message: "Insufficient permissions to send messages" });
       }
       
