@@ -158,7 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       
-      if (!hasPermission(user, 'canParticipateInChat')) {
+      if (!hasPermission(user, 'canCreateMessages')) {
         return res.status(403).json({ message: "Insufficient permissions to send messages" });
       }
       
